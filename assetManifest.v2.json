@@ -1,0 +1,40 @@
+{
+    "manifestVersion": 2,
+    "installedAssets": [
+        {
+            "name": "Debugging Essentials",
+            "id": "170773",
+            "versionId": "1.18",
+            "versionNumber": 576798,
+            "url": "https://assetstore.unity.com/packages/slug/170773"
+        },
+        {
+            "name": "Csharp Wizard",
+            "id": "104887",
+            "versionId": "1.4",
+            "versionNumber": 484477,
+            "url": "https://assetstore.unity.com/packages/slug/104887"
+        },
+        {
+            "name": "Script Inspector 3",
+            "id": "3535",
+            "versionId": "3.0.29",
+            "versionNumber": 617587,
+            "url": "https://assetstore.unity.com/packages/slug/3535"
+        },
+        {
+            "name": "Fullscreen Editor",
+            "id": "69534",
+            "versionId": "2.2.4",
+            "versionNumber": 638192,
+            "url": "https://assetstore.unity.com/packages/slug/69534"
+        },
+        {
+            "name": "NeoFPS: FPS Controller, Template & Toolkit",
+            "id": "150179",
+            "versionId": "1.1.14",
+            "versionNumber": 634631,
+            "url": "https://assetstore.unity.com/packages/slug/150179"
+        }
+    ]
+}
