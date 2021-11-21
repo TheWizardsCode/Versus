@@ -14,7 +14,7 @@ namespace WizardsCode.Versus.Controllers
     /// Other objects can query the city controller to ask the status
     /// of any particular block in the city.
     /// </summary>
-    public class CityGenerator : MonoBehaviour
+    public class CityController : MonoBehaviour
     {
         public enum BlockType {  Suburban, OuterCity, City, InnerCity }
         [Header("Level Generation")]
@@ -34,8 +34,8 @@ namespace WizardsCode.Versus.Controllers
         BlockController[] m_CityBlockPrefabs;
         [SerializeField, Tooltip("The prefabs to use when spawning inner city blocks. If you want a prefab to appear more frequently, have more instances.")]
         BlockController[] m_InnerCityBlockPrefabs;
-        [SerializeField, Tooltip("The texture that is used to overlay the cat/dog control map on this block.")]
-        public Transform mapPlane;
+        [SerializeField, Tooltip("The colour gradient to use on the faction map to indicate the cat vs dog influence on an area. 0.5 is nuetral, 0 is cat controlled, 1 is dog controlled.")]
+        internal Gradient m_FactionGradient;
 
         [Header("Top Down")]
         Camera m_TopDownCamera;
@@ -51,8 +51,6 @@ namespace WizardsCode.Versus.Controllers
 
             float territoryDepth = blockSize * m_CityDepth;
             float territoryWidth = blockSize * m_CityWidth;
-            mapPlane.localScale = new Vector3(territoryDepth / 10, 1, territoryWidth / 10);
-            mapPlane.position = new Vector3((territoryDepth / 2) - blockSize, 0.1f, (territoryWidth / 2) - blockSize);
 
             BlockController block;
             BlockType blockType = BlockType.Suburban;
@@ -105,45 +103,12 @@ namespace WizardsCode.Versus.Controllers
 
                     block.Coordinates = new Vector2(x, z);
                     block.BlockType = blockType;
-                    block.CatInfluence = 1;
-                    block.DogInfluence = 0;
+                    block.CatInfluence = Random.Range(0f, 1f);
+                    block.DogInfluence = Random.Range(0f, 1f);
 
                     cityBlocks[x, z] = block;
                 }
             }
-        }
-
-        private void Update()
-        {
-            int blockSize = m_BlockSize + (2 * m_RoadWidth);
-            Texture2D texture = new Texture2D((int)mapPlane.localScale.x, (int)mapPlane.localScale.z);
-            Color[] pixels = new Color[(int)mapPlane.localScale.x * (int)mapPlane.localScale.z];
-             
-            for (int y = 0; y < m_CityWidth; y++)
-            {
-                for (int x = 0; x < m_CityWidth; x++)
-                {
-                    Color color = GetTerritoryColour(x, y);
-                    for (int texX = x * blockSize; texX < x * blockSize; texX++)
-                    {
-                        for (int texY = y * blockSize; texX < y * blockSize; texY++)
-                        {
-                            pixels[texX + texY * (int)mapPlane.localScale.z] = color;
-                        }
-                    }
-                }
-            }
-
-            texture.SetPixels(pixels);
-            texture.wrapMode = TextureWrapMode.Clamp;
-            texture.Apply();
-
-            mapPlane.GetComponent<Renderer>().material.mainTexture = texture;
-        }
-
-        Color GetTerritoryColour(int x, int y)
-        {
-            return new Color(cityBlocks[x, y].CatInfluence * 256, 0, cityBlocks[x, y].DogInfluence * 256, 100);
         }
     }
 }
