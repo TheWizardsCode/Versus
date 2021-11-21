@@ -1,5 +1,103 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3652796277633492377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 114660808167493287}
+  - component: {fileID: 8990353923715784494}
+  - component: {fileID: 534089678538661703}
+  - component: {fileID: 4817732150482032007}
+  m_Layer: 0
+  m_Name: Faction Map Plane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &114660808167493287
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3652796277633492377}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -50, y: -1, z: -50}
+  m_LocalScale: {x: 10, y: 1, z: 10}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4174286663665791652}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &8990353923715784494
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3652796277633492377}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &534089678538661703
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3652796277633492377}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 171cdd4d911c11845a82aee80e1491fb, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4817732150482032007
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3652796277633492377}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &3695782348382375190
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,6 +236,7 @@ Transform:
   m_Children:
   - {fileID: 4174286664913761268}
   - {fileID: 7205962994273650819}
+  - {fileID: 114660808167493287}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -155,8 +254,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coordinates: {x: 0, y: 0}
   BlockType: 0
-  CatInfluence: 1
+  CatInfluence: 0
   DogInfluence: 0.464
+  m_FactionMap: {fileID: 114660808167493287}
 --- !u!1 &4174286664216899128
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +559,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936185
+      value: 579717999497839409
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343860]
@@ -471,6 +571,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936185]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839409]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -549,7 +653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936125
+      value: 579717999497839336
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343772]
@@ -561,6 +665,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936125]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839336]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -639,7 +747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936072
+      value: 579717999497839364
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343797]
@@ -651,6 +759,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936072]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839364]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -729,7 +841,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936084
+      value: 579717999497839349
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168344008]
@@ -741,6 +853,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936084]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839349]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -819,7 +935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936069
+      value: 579717999497839375
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147634660]
@@ -831,6 +947,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936069]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839375]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -909,7 +1029,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936167
+      value: 579717999497839322
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343760]
@@ -921,6 +1041,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936167]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839322]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -999,7 +1123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936184
+      value: 579717999497839347
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343579]
@@ -1011,6 +1135,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936184]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839347]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -1089,7 +1217,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936133
+      value: 579717999497839369
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147634860]
@@ -1101,6 +1229,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936133]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839369]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -1179,7 +1311,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936155
+      value: 579717999497839326
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147634834]
@@ -1191,6 +1323,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936155]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839326]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -1269,7 +1405,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936169
+      value: 579717999497839362
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147634967]
@@ -1281,6 +1417,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936169]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839362]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -1323,7 +1463,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936179
+      value: 579717999497839329
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343836]
@@ -1335,6 +1475,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936179]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839329]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1350,6 +1494,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839329].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343836].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -1359,6 +1507,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936179].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839329].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1441,7 +1593,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936089
+      value: 579717999497839285
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635196]
@@ -1453,6 +1605,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936089]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839285]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1468,6 +1624,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839285].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635196].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -1477,6 +1637,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936089].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839285].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1559,7 +1723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936107
+      value: 579717999497839316
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634784]
@@ -1571,6 +1735,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936107]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839316]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1586,6 +1754,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839316].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634784].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -1595,6 +1767,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936107].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839316].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1689,7 +1865,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936194
+      value: 579717999497839319
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635071]
@@ -1701,6 +1877,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936194]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839319]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1716,6 +1896,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839319].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635071].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -1725,6 +1909,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936194].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839319].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1819,7 +2007,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936182
+      value: 579717999497839400
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634911]
@@ -1831,6 +2019,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936182]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839400]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1846,6 +2038,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839400].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634911].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -1855,6 +2051,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936182].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839400].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1937,7 +2137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936199
+      value: 579717999497839395
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343590]
@@ -1949,6 +2149,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936199]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839395]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -1964,6 +2168,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839395].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343590].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -1973,6 +2181,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936199].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839395].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2067,7 +2279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936144
+      value: 579717999497839291
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343865]
@@ -2079,6 +2291,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936144]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839291]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2094,6 +2310,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839291].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343865].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2103,6 +2323,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936144].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839291].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2185,7 +2409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936166
+      value: 579717999497839338
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343577]
@@ -2197,6 +2421,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936166]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839338]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2212,6 +2440,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839338].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343577].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2221,6 +2453,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936166].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839338].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2315,7 +2551,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936142
+      value: 579717999497839354
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634859]
@@ -2327,6 +2563,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936142]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839354]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2342,6 +2582,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839354].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634859].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2351,6 +2595,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936142].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839354].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2457,7 +2705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936205
+      value: 579717999497839284
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343592]
@@ -2469,6 +2717,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936205]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839284]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2484,6 +2736,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839284].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343592].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2493,6 +2749,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936205].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839284].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2575,7 +2835,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936080
+      value: 579717999497839301
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634723]
@@ -2587,6 +2847,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936080]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839301]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2602,6 +2866,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839301].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634723].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2611,6 +2879,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936080].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839301].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2693,7 +2965,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936193
+      value: 579717999497839299
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343791]
@@ -2705,6 +2977,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936193]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839299]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2720,6 +2996,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839299].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343791].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2729,6 +3009,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936193].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839299].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2823,7 +3107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936168
+      value: 579717999497839394
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635109]
@@ -2835,6 +3119,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936168]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839394]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2850,6 +3138,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839394].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635109].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2859,6 +3151,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936168].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839394].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2953,7 +3249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936203
+      value: 579717999497839393
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634813]
@@ -2965,6 +3261,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936203]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839393]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -2980,6 +3280,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839393].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634813].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -2989,6 +3293,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936203].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839393].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3071,7 +3379,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936170
+      value: 579717999497839373
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343834]
@@ -3083,6 +3391,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936170]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839373]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3098,6 +3410,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839373].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343834].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -3107,6 +3423,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936170].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839373].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3189,7 +3509,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936113
+      value: 579717999497839328
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634850]
@@ -3201,6 +3521,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936113]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839328]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3216,6 +3540,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839328].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634850].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -3225,6 +3553,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936113].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839328].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3307,7 +3639,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936130
+      value: 579717999497839318
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635171]
@@ -3319,6 +3651,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936130]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839318]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3334,6 +3670,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839318].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147635171].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -3343,6 +3683,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936130].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839318].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3425,7 +3769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936109
+      value: 579717999497839286
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343561]
@@ -3437,6 +3781,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936109]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839286]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3452,6 +3800,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839286].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343561].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -3461,6 +3813,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936109].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839286].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3555,7 +3911,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936165
+      value: 579717999497839374
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634705]
@@ -3567,6 +3923,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936165]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839374]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3582,6 +3942,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839374].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844147634705].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -3591,6 +3955,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936165].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839374].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3685,7 +4053,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936079
+      value: 579717999497839391
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343910]
@@ -3697,6 +4065,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936079]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839391]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Plane
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3712,6 +4084,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839391].m_WidthSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717844168343910].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
@@ -3721,6 +4097,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
       propertyPath: managedReferences[579717847008936079].m_HeightSegments
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207025722874953192, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
+      propertyPath: managedReferences[579717999497839391].m_HeightSegments
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1207025722874953193, guid: f658c889e6db5594ab6e19f9af347472, type: 3}
@@ -3851,7 +4231,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936095
+      value: 579717999497839340
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343938]
@@ -3863,6 +4243,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936095]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839340]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -3941,7 +4325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936104
+      value: 579717999497839310
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147634804]
@@ -3953,6 +4337,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936104]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839310]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -4031,7 +4419,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936117
+      value: 579717999497839293
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147634974]
@@ -4043,6 +4431,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936117]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839293]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -4121,7 +4513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936189
+      value: 579717999497839330
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343801]
@@ -4133,6 +4525,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936189]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839330]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -4211,7 +4607,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936204
+      value: 579717999497839366
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147634745]
@@ -4223,6 +4619,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936204]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839366]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -4301,7 +4701,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936088
+      value: 579717999497839335
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844147635002]
@@ -4313,6 +4713,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936088]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839335]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -4391,7 +4795,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936103
+      value: 579717999497839296
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343918]
@@ -4403,6 +4807,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936103]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839296]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
@@ -4481,7 +4889,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: m_Shape
-      value: 579717847008936129
+      value: 579717999497839401
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717844168343604]
@@ -4493,6 +4901,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
       propertyPath: managedReferences[579717847008936129]
+      value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393534575251328420, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
+      propertyPath: managedReferences[579717999497839401]
       value: Unity.ProBuilder UnityEngine.ProBuilder.Shapes.Cube
       objectReference: {fileID: 0}
     - target: {fileID: 4393534575251328423, guid: d4c0309a5c947c04ebe3d7ecc53b4cb8, type: 3}
