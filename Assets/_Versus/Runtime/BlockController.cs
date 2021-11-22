@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using static WizardsCode.Versus.Controllers.CityController;
 using WizardsCode.Versus.Controllers;
+using static WizardsCode.Versus.Controller.AnimalController;
 
 namespace WizardsCode.Versus.Controller
 {
     public class BlockController : MonoBehaviour
     {
         [HideInInspector, SerializeField, Tooltip("The z,y coordinates of this block within the city.")]
-        public Vector2 Coordinates;
+        public Vector2Int Coordinates;
         [SerializeField, Tooltip("Block size in units.")]
         internal Vector2 m_Size = new Vector2(100, 100);
         [HideInInspector, SerializeField, Tooltip("The type of block this is. The block type dictates what is generated within the block.")]
@@ -22,21 +23,53 @@ namespace WizardsCode.Versus.Controller
         int m_FactionMembersNeededForControl = 5;
 
         private Mesh m_FactionMesh;
-        private CityController cityController;
 
         private List<AnimalController> m_DogsPresent = new List<AnimalController>();
         private List<AnimalController> m_CatsPresent = new List<AnimalController>();
 
         private float timeOfNextFactionMapUpdate = 0;
+        public CityController CityController { get; private set; }
+
+        public Faction ControllingFaction
+        {
+            get
+            {
+                if (NormalizedFactionInfluence <= 0.1f)
+                {
+                    return Faction.Cat;
+                }
+                else if (NormalizedFactionInfluence >= 0.9f)
+                {
+                    return Faction.Dog;
+                } else
+                {
+                    return Faction.Neutral;
+                }
+            }
+        }
 
         private void Start()
         {
             m_FactionMesh = m_FactionMap.GetComponent<MeshFilter>().mesh;
-            cityController = FindObjectOfType<CityController>();
+            CityController = FindObjectOfType<CityController>();
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            AnimalController animal = other.GetComponentInParent<AnimalController>();
+            if (animal)
+            {
+                animal.HomeBlock.RemoveAnimal(animal);
+                AddAnimal(animal);
+            }
         }
 
         internal void AddAnimal(AnimalController animal)
         {
+            animal.transform.SetParent(transform);
+            animal.transform.position = GetRandomPoint();
+            animal.HomeBlock = this;
+
             switch (animal.m_Faction) {
                 case AnimalController.Faction.Cat:
                     m_CatsPresent.Add(animal);
@@ -45,8 +78,19 @@ namespace WizardsCode.Versus.Controller
                     m_DogsPresent.Add(animal);
                     break;
             }
-            animal.transform.SetParent(transform);
-            animal.transform.position = GetRandomPoint();
+        }
+
+        internal void RemoveAnimal(AnimalController animal)
+        {
+            switch (animal.m_Faction)
+            {
+                case AnimalController.Faction.Cat:
+                    m_CatsPresent.Remove(animal);
+                    break;
+                case AnimalController.Faction.Dog:
+                    m_DogsPresent.Remove(animal);
+                    break;
+            }
         }
 
         /// <summary>
@@ -69,7 +113,7 @@ namespace WizardsCode.Versus.Controller
             Vector3[] vertices = m_FactionMesh.vertices;
             Color32[] colors = new Color32[vertices.Length];
 
-            Color32 blockColor = cityController.m_FactionGradient.Evaluate(NormalizedFactionInfluence);
+            Color32 blockColor = CityController.m_FactionGradient.Evaluate(NormalizedFactionInfluence);
             for (int i = 0; i < vertices.Length; i++)
             {
                 colors[i] = blockColor;

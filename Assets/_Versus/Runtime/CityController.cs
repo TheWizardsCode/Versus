@@ -16,7 +16,7 @@ namespace WizardsCode.Versus.Controllers
     /// </summary>
     public class CityController : MonoBehaviour
     {
-        public enum BlockType {  Suburban, OuterCity, City, InnerCity }
+        public enum BlockType { Suburban, OuterCity, City, InnerCity }
         [Header("Level Generation")]
         [SerializeField, Tooltip("The width of the city in blocks. A single block is 100 x 100, not including the roads connecting blocks.")]
         int m_CityWidth = 15;
@@ -47,6 +47,15 @@ namespace WizardsCode.Versus.Controllers
         Camera m_TopDownCamera;
 
         BlockController[,] cityBlocks;
+
+        public int Width {
+            get { return m_CityWidth; }
+        }
+
+        public int Depth
+        {
+            get { return m_CityDepth; }
+        }
 
         private void Start()
         {
@@ -107,7 +116,7 @@ namespace WizardsCode.Versus.Controllers
                             break;
                     }
 
-                    block.Coordinates = new Vector2(x, y);
+                    block.Coordinates = new Vector2Int(x, y);
                     block.BlockType = blockType;
 
                     float catWeight = (float)((m_CityWidth - x) + (m_CityDepth - y)) / (m_CityWidth + m_CityDepth);
@@ -127,6 +136,11 @@ namespace WizardsCode.Versus.Controllers
                     cityBlocks[x, y] = block;
                 }
             }
+        }
+
+        internal BlockController GetBlock(int x, int y)
+        {
+            return cityBlocks[x, y];
         }
     }
 }
