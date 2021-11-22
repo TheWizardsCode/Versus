@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 using WizardsCode.Versus.Controller;
 
@@ -43,7 +44,9 @@ namespace WizardsCode.Versus.Controllers
         [SerializeField, Tooltip("The colour gradient to use on the faction map to indicate the cat vs dog influence on an area. 0.5 is nuetral, 0 is cat controlled, 1 is dog controlled.")]
         internal Gradient m_FactionGradient;
 
-        [Header("Top Down")]
+        [Header("Top Down")] 
+        [SerializeField, Tooltip("Root object where city blocks are created")]
+        Transform m_CityBlockRoot;
         Camera m_TopDownCamera;
 
         BlockController[,] cityBlocks;
@@ -111,13 +114,15 @@ namespace WizardsCode.Versus.Controllers
                             block = Instantiate(m_InnerCityBlockPrefabs[Random.Range(0, m_InnerCityBlockPrefabs.Length)], position, rotation);
                             break;
                         default:
-                            Debug.LogError("Unkown block type: " + blockType);
+                            Debug.LogError("Unknown block type: " + blockType);
                             block = null;
                             break;
                     }
 
+                    //TODO block might be null here
                     block.Coordinates = new Vector2Int(x, y);
                     block.BlockType = blockType;
+                    block.transform.parent = m_CityBlockRoot;
 
                     float catWeight = (float)((m_CityWidth - x) + (m_CityDepth - y)) / (m_CityWidth + m_CityDepth);
                     float dogWeight = 1 - catWeight;
