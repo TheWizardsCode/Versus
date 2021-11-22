@@ -11,7 +11,7 @@ namespace WizardsCode.Versus.Controller
         [HideInInspector, SerializeField, Tooltip("The z,y coordinates of this block within the city.")]
         public Vector2 Coordinates;
         [SerializeField, Tooltip("Block size in units.")]
-        Vector2 m_BlockSize = new Vector2(50, 50);
+        internal Vector2 m_Size = new Vector2(100, 100);
         [HideInInspector, SerializeField, Tooltip("The type of block this is. The block type dictates what is generated within the block.")]
         public BlockType BlockType;
         [SerializeField, Tooltip("The mesh that will show the faction control.")]
@@ -46,13 +46,17 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
             animal.transform.SetParent(transform);
-            animal.transform.position = GetSpawnPoint();
+            animal.transform.position = GetRandomPoint();
         }
 
-        public Vector3 GetSpawnPoint()
+        /// <summary>
+        /// Gets a random point within this block that an animal might want to go to.
+        /// </summary>
+        /// <returns></returns>
+        internal Vector3 GetRandomPoint()
         {
             //TODO: more intelligent spawning location, currently animals can spawn on top of one another, inside buildings and more.
-            return transform.position +  new Vector3(Random.Range(-m_BlockSize.x / 2, m_BlockSize.x / 2), 0, Random.Range(-m_BlockSize.y / 2, m_BlockSize.y / 2));
+            return transform.position +  new Vector3(Random.Range(-m_Size.x / 2, m_Size.x / 2), 0, Random.Range(-m_Size.y / 2, m_Size.y / 2));
         }
 
         private void Update()
