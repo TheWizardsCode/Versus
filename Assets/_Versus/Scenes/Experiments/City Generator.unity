@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 888951452}
   - component: {fileID: 888951451}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Top Down Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -335,8 +335,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 10000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 1000
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -359,14 +359,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 888951450}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 850, y: 2000, z: 850}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: -90, z: 0}
 --- !u!1 &1324633306
 GameObject:
   m_ObjectHideFlags: 0
@@ -518,9 +518,9 @@ MonoBehaviour:
   m_DogPrefab: {fileID: 2107230908, guid: f142a83df33f7b647a8a8d77bed97071, type: 3}
   m_FactionGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0, b: 0, a: 1}
-    key1: {r: 0, g: 0, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 1, a: 0}
+    key0: {r: 1, g: 0, b: 0, a: 0.5019608}
+    key1: {r: 0, g: 0, b: 1, a: 0.19607843}
+    key2: {r: 0, g: 0, b: 1, a: 0.5019608}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
@@ -535,8 +535,8 @@ MonoBehaviour:
     ctime6: 0
     ctime7: 0
     atime0: 0
-    atime1: 65535
-    atime2: 0
+    atime1: 32768
+    atime2: 65535
     atime3: 0
     atime4: 0
     atime5: 0
@@ -544,7 +544,7 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
+    m_NumAlphaKeys: 3
 --- !u!4 &1779975901
 Transform:
   m_ObjectHideFlags: 0
