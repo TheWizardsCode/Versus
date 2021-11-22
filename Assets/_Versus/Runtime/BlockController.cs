@@ -10,6 +10,8 @@ namespace WizardsCode.Versus.Controller
     {
         [HideInInspector, SerializeField, Tooltip("The z,y coordinates of this block within the city.")]
         public Vector2 Coordinates;
+        [SerializeField, Tooltip("Block size in units.")]
+        Vector2 m_BlockSize = new Vector2(50, 50);
         [HideInInspector, SerializeField, Tooltip("The type of block this is. The block type dictates what is generated within the block.")]
         public BlockType BlockType;
         [SerializeField, Tooltip("The mesh that will show the faction control.")]
@@ -33,16 +35,24 @@ namespace WizardsCode.Versus.Controller
             cityController = FindObjectOfType<CityController>();
         }
 
-        internal void AddCat(AnimalController cat)
+        internal void AddAnimal(AnimalController animal)
         {
-            m_CatsPresent.Add(cat);
-            cat.transform.SetParent(transform);
+            switch (animal.m_Faction) {
+                case AnimalController.Faction.Cat:
+                    m_CatsPresent.Add(animal);
+                    break;
+                case AnimalController.Faction.Dog:
+                    m_DogsPresent.Add(animal);
+                    break;
+            }
+            animal.transform.SetParent(transform);
+            animal.transform.position = GetSpawnPoint();
         }
 
-        internal void AddDog(AnimalController dog)
+        public Vector3 GetSpawnPoint()
         {
-            m_DogsPresent.Add(dog);
-            dog.transform.SetParent(transform);
+            //TODO: more intelligent spawning location, currently animals can spawn on top of one another, inside buildings and more.
+            return transform.position +  new Vector3(Random.Range(-m_BlockSize.x / 2, m_BlockSize.x / 2), 0, Random.Range(-m_BlockSize.y / 2, m_BlockSize.y / 2));
         }
 
         private void Update()

@@ -115,13 +115,13 @@ namespace WizardsCode.Versus.Controllers
                     int numOfCats = Random.Range(0, Mathf.RoundToInt(10 * catWeight));
                     for (int i = 0; i < numOfCats; i++)
                     {
-                        block.AddCat(Instantiate<AnimalController>(m_CatPrefab));
+                        block.AddAnimal(Instantiate<AnimalController>(m_CatPrefab));
                     }
 
                     int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
                     for (int i = 0; i < numOfDogs; i++)
                     {
-                        block.AddDog(Instantiate<AnimalController>(m_DogPrefab));
+                        block.AddAnimal(Instantiate<AnimalController>(m_DogPrefab));
                     }
 
                     cityBlocks[x, y] = block;
