@@ -80,6 +80,10 @@ namespace WizardsCode.Versus.Controllers
             Vector3 position;
             float distanceFromCenter;
             Quaternion rotation;
+            int suburbIdx = 0;
+            int cityIdx = 0;
+            int innerCityIdx = 0;
+            int downtownIdx = 0;
             for (int y = 0; y < m_CityWidth; y++)
             {
                 for (int x = 0; x < m_CityDepth; x++)
@@ -109,15 +113,23 @@ namespace WizardsCode.Versus.Controllers
                     {
                         case BlockType.Suburban:
                             block = Instantiate(m_SuburbanBlockPrefabs[Random.Range(0, m_SuburbanBlockPrefabs.Length)], position, rotation);
+                            block.name = "Suburb " + suburbIdx;
+                            suburbIdx++;
                             break;
                         case BlockType.OuterCity:
                             block = Instantiate(m_OuterCityBlockPrefabs[Random.Range(0, m_OuterCityBlockPrefabs.Length)], position, rotation);
+                            block.name = "City Block " + cityIdx;
+                            cityIdx++;
                             break;
                         case BlockType.City:
                             block = Instantiate(m_CityBlockPrefabs[Random.Range(0, m_CityBlockPrefabs.Length)], position, rotation);
+                            block.name = "Inner City Block " + innerCityIdx;
+                            innerCityIdx++;
                             break;
                         case BlockType.InnerCity:
                             block = Instantiate(m_InnerCityBlockPrefabs[Random.Range(0, m_InnerCityBlockPrefabs.Length)], position, rotation);
+                            block.name = "Downtown Block " + downtownIdx;
+                            downtownIdx++;
                             break;
                         default:
                             Debug.LogError("Unknown block type: " + blockType);
@@ -132,18 +144,23 @@ namespace WizardsCode.Versus.Controllers
                     block.BlockType = blockType;
                     block.transform.parent = m_CityBlockRoot;
 
+                    AnimalController animal;
                     float catWeight = (float)((m_CityWidth - x) + (m_CityDepth - y)) / (m_CityWidth + m_CityDepth);
                     float dogWeight = 1 - catWeight;
                     int numOfCats = Random.Range(0, Mathf.RoundToInt(10 * catWeight));
                     for (int i = 0; i < numOfCats; i++)
                     {
-                        block.AddAnimal(Instantiate<AnimalController>(m_CatPrefab));
+                        animal = Instantiate<AnimalController>(m_CatPrefab);
+                        block.AddAnimal(animal);
+                        animal.OnAnimalAction += eventLogger.OnEventReceived;
                     }
 
                     int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
                     for (int i = 0; i < numOfDogs; i++)
                     {
-                        block.AddAnimal(Instantiate<AnimalController>(m_DogPrefab));
+                        animal = Instantiate<AnimalController>(m_DogPrefab);
+                        block.AddAnimal(animal);
+                        animal.OnAnimalAction += eventLogger.OnEventReceived;
                     }
 
                     cityBlocks[x, y] = block;
