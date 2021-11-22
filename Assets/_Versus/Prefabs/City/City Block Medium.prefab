@@ -286,6 +286,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1643215264773720657}
   - component: {fileID: -916100419488886915}
+  - component: {fileID: 960397562732018631}
   m_Layer: 0
   m_Name: City Block Medium
   m_TagString: Untagged
@@ -329,6 +330,19 @@ MonoBehaviour:
   m_FactionMap: {fileID: 812714411087915319}
   m_FactionMapUpdateFrequency: 1
   m_FactionMembersNeededForControl: 5
+--- !u!65 &960397562732018631
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1643215264773720658}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 100, y: 2, z: 100}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1643215265721390360
 GameObject:
   m_ObjectHideFlags: 0

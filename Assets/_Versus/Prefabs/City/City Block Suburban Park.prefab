@@ -385,6 +385,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4248918829405434278}
   - component: {fileID: -4724902959653316845}
+  - component: {fileID: 3376608308099470890}
   m_Layer: 0
   m_Name: City Block Suburban Park
   m_TagString: Untagged
@@ -428,6 +429,19 @@ MonoBehaviour:
   m_FactionMap: {fileID: 8643595688925389137}
   m_FactionMapUpdateFrequency: 1
   m_FactionMembersNeededForControl: 5
+--- !u!65 &3376608308099470890
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4248918829405434277}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 100, y: 2, z: 100}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &4248918827880533147
 PrefabInstance:
   m_ObjectHideFlags: 0
