@@ -518,9 +518,9 @@ MonoBehaviour:
   m_DogPrefab: {fileID: 2107230908, guid: f142a83df33f7b647a8a8d77bed97071, type: 3}
   m_FactionGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0, b: 0, a: 1}
-    key1: {r: 0, g: 0, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 1, a: 0}
+    key0: {r: 1, g: 0, b: 0, a: 0.5019608}
+    key1: {r: 0, g: 0, b: 1, a: 0.19607843}
+    key2: {r: 0, g: 0, b: 1, a: 0.5019608}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
@@ -535,8 +535,8 @@ MonoBehaviour:
     ctime6: 0
     ctime7: 0
     atime0: 0
-    atime1: 65535
-    atime2: 0
+    atime1: 32768
+    atime2: 65535
     atime3: 0
     atime4: 0
     atime5: 0
@@ -544,7 +544,7 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
+    m_NumAlphaKeys: 3
 --- !u!4 &1779975901
 Transform:
   m_ObjectHideFlags: 0
