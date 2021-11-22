@@ -85,7 +85,7 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
 
-            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} add to {ToString()}"));
+            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} moved into {ToString()}."));
         }
 
         internal void RemoveAnimal(AnimalController animal)
@@ -99,6 +99,8 @@ namespace WizardsCode.Versus.Controller
                     m_DogsPresent.Remove(animal);
                     break;
             }
+
+            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} moved out of {ToString()}."));
         }
 
         /// <summary>

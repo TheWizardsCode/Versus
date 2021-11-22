@@ -36,6 +36,9 @@ namespace WizardsCode.Versus.Controller
         private Vector3 moveTargetPosition;
         private float availableRepellent;
 
+        public delegate void OnAnimalActionDelegate(VersuseEvent versusEvent);
+        public OnAnimalActionDelegate OnAnimalAction;
+
         internal BlockController HomeBlock
         {
             get { return m_HomeBlock; }
@@ -57,10 +60,11 @@ namespace WizardsCode.Versus.Controller
 
         protected override void OnHealthChanged(float from, float to, bool critical, IDamageSource source)
         {
-            if (to < from)
+            if (to < from && to > 0)
             {
                 currentState = State.Flee;
                 moveTargetPosition = GetNewWanderPosition();
+                OnAnimalAction(new VersuseEvent($"{ToString()} as been hit by {from - to} units of repellent. They are fleeing from the source but not yet giving up this block."));
             }
 
             base.OnHealthChanged(from, to, critical, source);
@@ -74,6 +78,7 @@ namespace WizardsCode.Versus.Controller
                 isAlive = true;
                 currentState = State.Flee;
                 moveTargetPosition = GetFriendlyPositionOrDie();
+                OnAnimalAction(new VersuseEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
             }
 
             switch (currentState)
