@@ -34,6 +34,12 @@ namespace WizardsCode.Versus.Controllers
         BlockController[] m_CityBlockPrefabs;
         [SerializeField, Tooltip("The prefabs to use when spawning inner city blocks. If you want a prefab to appear more frequently, have more instances.")]
         BlockController[] m_InnerCityBlockPrefabs;
+
+        [Header("Factions")]
+        [SerializeField, Tooltip("Cat prefab, used to instantiate cats into the world.")]
+        AnimalController m_CatPrefab;
+        [SerializeField, Tooltip("Dog prefab, used to instantiate dogs into the world.")]
+        AnimalController m_DogPrefab;
         [SerializeField, Tooltip("The colour gradient to use on the faction map to indicate the cat vs dog influence on an area. 0.5 is nuetral, 0 is cat controlled, 1 is dog controlled.")]
         internal Gradient m_FactionGradient;
 
@@ -57,11 +63,11 @@ namespace WizardsCode.Versus.Controllers
             Vector3 position;
             float distanceFromCenter;
             Quaternion rotation;
-            for (int z = 0; z < m_CityWidth; z++)
+            for (int y = 0; y < m_CityWidth; y++)
             {
-                for (int x = 0; x < m_CityWidth; x++)
+                for (int x = 0; x < m_CityDepth; x++)
                 {
-                    position = new Vector3(x * blockSize, 0, z * blockSize);
+                    position = new Vector3(x * blockSize, 0, y * blockSize);
                     rotation = Quaternion.identity;
 
                     distanceFromCenter = Vector3.Distance(position, center);
@@ -101,12 +107,24 @@ namespace WizardsCode.Versus.Controllers
                             break;
                     }
 
-                    block.Coordinates = new Vector2(x, z);
+                    block.Coordinates = new Vector2(x, y);
                     block.BlockType = blockType;
-                    block.CatInfluence = Random.Range(0f, 1f);
-                    block.DogInfluence = Random.Range(0f, 1f);
 
-                    cityBlocks[x, z] = block;
+                    float catWeight = (float)((m_CityWidth - x) + (m_CityDepth - y)) / (m_CityWidth + m_CityDepth);
+                    float dogWeight = 1 - catWeight;
+                    int numOfCats = Random.Range(0, Mathf.RoundToInt(10 * catWeight));
+                    for (int i = 0; i < numOfCats; i++)
+                    {
+                        block.AddAnimal(Instantiate<AnimalController>(m_CatPrefab));
+                    }
+
+                    int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
+                    for (int i = 0; i < numOfDogs; i++)
+                    {
+                        block.AddAnimal(Instantiate<AnimalController>(m_DogPrefab));
+                    }
+
+                    cityBlocks[x, y] = block;
                 }
             }
         }
