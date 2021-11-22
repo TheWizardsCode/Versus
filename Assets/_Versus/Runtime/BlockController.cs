@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using static WizardsCode.Versus.Controllers.CityController;
 using WizardsCode.Versus.Controllers;
 using static WizardsCode.Versus.Controller.AnimalController;
+using System.Text;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -31,6 +32,8 @@ namespace WizardsCode.Versus.Controller
         public OnBlockUpdatedDelegate OnBlockUpdated;
 
         private float timeOfNextFactionMapUpdate = 0;
+        private Faction previousFaction;
+
         public CityController CityController { get; private set; }
 
         public Faction ControllingFaction
@@ -81,8 +84,6 @@ namespace WizardsCode.Versus.Controller
                     m_DogsPresent.Add(animal);
                     break;
             }
-
-            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} add to {ToString()}"));
         }
 
         internal void RemoveAnimal(AnimalController animal)
@@ -111,7 +112,6 @@ namespace WizardsCode.Versus.Controller
         private void Update()
         {
             if (Time.timeSinceLevelLoad < timeOfNextFactionMapUpdate) return;
-
             timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
 
             //OPTIMIZATION: if this is not in view of the camera there is no need to update the faction mesh
@@ -125,6 +125,29 @@ namespace WizardsCode.Versus.Controller
             }
 
             m_FactionMesh.colors32 = colors;
+
+            if (ControllingFaction != previousFaction)
+            {
+                switch (ControllingFaction)
+                {
+                    case Faction.Cat:
+                        OnBlockUpdated(new VersuseEvent($"The cats have taken {ToString()}."));
+                        break;
+                    case Faction.Dog:
+                        OnBlockUpdated(new VersuseEvent($"The dogs have taken {ToString()}."));
+                        break;
+                    case Faction.Neutral:
+                        if (previousFaction == Faction.Cat)
+                        {
+                            OnBlockUpdated(new VersuseEvent($"The dogs have weakened the cats hold on {ToString()}."));
+                        } else
+                        {
+                            OnBlockUpdated(new VersuseEvent($"The cats have weakened the dogs hold on {ToString()}."));
+                        }
+                        break;
+                }
+                previousFaction = ControllingFaction;
+            }
         }
 
         /// <summary>
@@ -150,6 +173,11 @@ namespace WizardsCode.Versus.Controller
                     return 0.5f - influence;
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{name} {Coordinates}.";
         }
     }
 }
