@@ -486,7 +486,7 @@ MonoBehaviour:
   Coordinates: {x: 0, y: 0}
   m_Size: {x: 100, y: 100}
   BlockType: 0
-  m_FactionMap: {fileID: 0}
+  m_FactionMap: {fileID: 8643595688925389137}
   m_FactionMapUpdateFrequency: 1
   m_FactionMembersNeededForControl: 5
 --- !u!65 &3376608308099470890
@@ -3827,7 +3827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7799064541574097749, guid: 2100ade380fca684bb822b07ca6f0dee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: -0.01
       objectReference: {fileID: 0}
     - target: {fileID: 7799064541574097749, guid: 2100ade380fca684bb822b07ca6f0dee, type: 3}
       propertyPath: m_LocalPosition.z
