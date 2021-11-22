@@ -12,22 +12,59 @@ namespace WizardsCode.Versus.Controller
         public Vector2 Coordinates;
         [HideInInspector, SerializeField, Tooltip("The type of block this is. The block type dictates what is generated within the block.")]
         public BlockType BlockType;
-        [SerializeField, Tooltip("The level of normalized level of influence that cats have on this block."), Range(0f, 1f)]
-        public float CatInfluence = 0;
-        [SerializeField, Tooltip("The level of normalized level of influence that dogs have on this block."), Range(0f, 1f)]
-        public float DogInfluence = 0;
         [SerializeField, Tooltip("The mesh that will show the faction control.")]
         Transform m_FactionMap;
 
-        int imageWidth = 100;
-        int imageDepth = 100;
         private Mesh m_FactionMesh;
         private CityController cityController;
+
+        private List<AnimalController> m_DogsPresent = new List<AnimalController>();
+        private List<AnimalController> m_CatsPresent = new List<AnimalController>();
+
+        public float CatInfluence
+        {
+            get
+            {
+                if (m_CatsPresent.Count + m_DogsPresent.Count > 0)
+                {
+                    return m_CatsPresent.Count / (m_CatsPresent.Count + m_DogsPresent.Count);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+        public float DogInfluence
+        {
+            get
+            {
+                if (m_CatsPresent.Count + m_DogsPresent.Count > 0)
+                {
+                    return m_DogsPresent.Count / (m_CatsPresent.Count + m_DogsPresent.Count);
+                } else
+                {
+                    return 0;
+                }
+            }
+        }
 
         private void Start()
         {
             m_FactionMesh = m_FactionMap.GetComponent<MeshFilter>().mesh;
             cityController = FindObjectOfType<CityController>();
+        }
+
+        internal void AddCat(AnimalController cat)
+        {
+            m_CatsPresent.Add(cat);
+            cat.transform.SetParent(transform);
+        }
+
+        internal void AddDog(AnimalController dog)
+        {
+            m_DogsPresent.Add(dog);
+            dog.transform.SetParent(transform);
         }
 
         private void Update()
@@ -39,7 +76,21 @@ namespace WizardsCode.Versus.Controller
 
             for (int i = 0; i < vertices.Length; i++)
             {
-                // 0.5 is neutral, 0 is cat controlled, 1 is dog controlled
+                colors[i] = cityController.m_FactionGradient.Evaluate(NormalizedFactioninfluence);
+            }
+
+            m_FactionMesh.colors32 = colors;
+        }
+
+        /// <summary>
+        /// Get a normalized value that represents the influence of each faction on this block.
+        /// 0.5 is neutral, 0 is cat controlled, 1 is dog controlled
+        /// </summary>
+        /// <returns>0.5 is neutral, 0 is cat controlled, 1 is dog controlled</returns>
+        internal float NormalizedFactioninfluence
+        {
+            get
+            {
                 float influence = 0.5f;
                 if (DogInfluence > CatInfluence)
                 {
@@ -49,10 +100,9 @@ namespace WizardsCode.Versus.Controller
                 {
                     influence = 0.5f - (CatInfluence - DogInfluence) / 2;
                 }
-                colors[i] = cityController.m_FactionGradient.Evaluate(influence);
-            }
 
-            m_FactionMesh.colors32 = colors;
+                return influence;
+            }
         }
     }
 }

@@ -273,7 +273,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1070
+  m_VersionIndex: 1079
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -380,6 +380,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7733702202406335480}
   - component: {fileID: 7733702202406335481}
+  - component: {fileID: 2107230908}
   m_Layer: 16
   m_Name: Dog
   m_TagString: Untagged
@@ -424,6 +425,19 @@ MonoBehaviour:
   m_OnIsAliveChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2107230908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7733702202406335483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d42290257782484d80013f86ab56a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Faction: 1
 --- !u!1 &7733702203138555148
 GameObject:
   m_ObjectHideFlags: 0
@@ -730,7 +744,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1209
+  m_VersionIndex: 1215
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

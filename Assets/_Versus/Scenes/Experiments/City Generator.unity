@@ -452,6 +452,8 @@ MonoBehaviour:
   - {fileID: 3683175509665875012, guid: 3a9f33ece3ad1af46bccd4cee9e58465, type: 3}
   - {fileID: 3683175509665875012, guid: 3a9f33ece3ad1af46bccd4cee9e58465, type: 3}
   - {fileID: -916100419488886915, guid: 2daceacacfe0e904b8cf1cce2317ed89, type: 3}
+  m_CatPrefab: {fileID: 7571226358191245477, guid: 742eb4a823712b542b1d13cbd299b9f8, type: 3}
+  m_DogPrefab: {fileID: 2107230908, guid: f142a83df33f7b647a8a8d77bed97071, type: 3}
   m_FactionGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 0, a: 1}
