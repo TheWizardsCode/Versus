@@ -84,6 +84,8 @@ namespace WizardsCode.Versus.Controller
                     m_DogsPresent.Add(animal);
                     break;
             }
+
+            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} add to {ToString()}"));
         }
 
         internal void RemoveAnimal(AnimalController animal)
