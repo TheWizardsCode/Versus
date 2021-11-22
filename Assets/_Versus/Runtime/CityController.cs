@@ -50,6 +50,7 @@ namespace WizardsCode.Versus.Controllers
         Camera m_TopDownCamera;
 
         BlockController[,] cityBlocks;
+        private EventLogger eventLogger;
 
         public int Width {
             get { return m_CityWidth; }
@@ -62,13 +63,17 @@ namespace WizardsCode.Versus.Controllers
 
         private void Start()
         {
+            eventLogger = new EventLogger();
+
+            GenerateCity();
+        }
+
+        private void GenerateCity()
+        {
             cityBlocks = new BlockController[m_CityDepth, m_CityWidth];
             int blockSize = m_BlockSize + (2 * m_RoadWidth);
             Vector3 center = new Vector3(blockSize * m_CityDepth / 2, 0, (blockSize * m_CityWidth) / 2);
             float maxDistanceFromCenter = Vector3.Distance(center, Vector3.zero);
-
-            float territoryDepth = blockSize * m_CityDepth;
-            float territoryWidth = blockSize * m_CityWidth;
 
             BlockController block;
             BlockType blockType = BlockType.Suburban;
@@ -100,7 +105,8 @@ namespace WizardsCode.Versus.Controllers
                         blockType = BlockType.Suburban;
                     }
 
-                    switch (blockType) {
+                    switch (blockType)
+                    {
                         case BlockType.Suburban:
                             block = Instantiate(m_SuburbanBlockPrefabs[Random.Range(0, m_SuburbanBlockPrefabs.Length)], position, rotation);
                             break;
@@ -119,7 +125,9 @@ namespace WizardsCode.Versus.Controllers
                             break;
                     }
 
-                    //TODO block might be null here
+                    if (block == null) continue;
+
+                    block.OnBlockUpdated += eventLogger.OnEventReceived;
                     block.Coordinates = new Vector2Int(x, y);
                     block.BlockType = blockType;
                     block.transform.parent = m_CityBlockRoot;

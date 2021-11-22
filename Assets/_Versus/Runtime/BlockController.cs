@@ -27,6 +27,9 @@ namespace WizardsCode.Versus.Controller
         private List<AnimalController> m_DogsPresent = new List<AnimalController>();
         private List<AnimalController> m_CatsPresent = new List<AnimalController>();
 
+        public delegate void OnBlockUpdatedDelegate(VersuseEvent versusEvent);
+        public OnBlockUpdatedDelegate OnBlockUpdated;
+
         private float timeOfNextFactionMapUpdate = 0;
         public CityController CityController { get; private set; }
 
@@ -78,6 +81,8 @@ namespace WizardsCode.Versus.Controller
                     m_DogsPresent.Add(animal);
                     break;
             }
+
+            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} add to {ToString()}"));
         }
 
         internal void RemoveAnimal(AnimalController animal)
