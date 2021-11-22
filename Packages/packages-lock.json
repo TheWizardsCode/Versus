@@ -137,12 +137,13 @@
       "url": "https://packages.unity.com"
     },
     "org.wizardscode.devlogger": {
-      "version": "file:E:/WizardsCode/DevLogger/Assets/WizardsCode/DevLogger",
+      "version": "git@github.com:TheWizardsCode/DevLogger.git",
       "depth": 0,
-      "source": "local",
+      "source": "git",
       "dependencies": {
         "com.unity.postprocessing": "2.3.0"
-      }
+      },
+      "hash": "c4d65ec4b8ad13848e89deae6e41c17d9b2577a6"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
