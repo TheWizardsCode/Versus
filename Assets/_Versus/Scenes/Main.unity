@@ -707,7 +707,7 @@ GameObject:
   - component: {fileID: 754719097}
   - component: {fileID: 754719096}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Animal Messages
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -816,7 +816,7 @@ GameObject:
   - component: {fileID: 830885532}
   - component: {fileID: 830885531}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Block Messages
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
