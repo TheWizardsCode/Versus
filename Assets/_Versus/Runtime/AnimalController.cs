@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Versus.Weapons;
@@ -7,7 +7,7 @@ using NeoFPS;
 namespace WizardsCode.Versus.Controller
 {
     /// <summary>
-    /// The animal controller is placed on each of the AI animals int he game and is responsible for managing their behaviour.
+    /// The animal controller is placed on each of the AI animals in the game and is responsible for managing their behaviour.
     /// </summary>
     public class AnimalController : RechargingHealthManager
     {
@@ -112,6 +112,7 @@ namespace WizardsCode.Versus.Controller
                         go.transform.position = transform.position;
                         availableRepellent -= go.RequiredRepellent;
                         currentState = State.GatherRepellent;
+                        OnAnimalAction(new VersuseEvent($"{ToString()} placed a repellent mine at {transform.position}."));
                     }
                     break;
                 case State.Flee:

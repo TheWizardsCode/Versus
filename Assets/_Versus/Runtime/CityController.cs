@@ -84,6 +84,8 @@ namespace WizardsCode.Versus.Controllers
             int cityIdx = 0;
             int innerCityIdx = 0;
             int downtownIdx = 0;
+            int catIdx = 0;
+            int dogIdx = 0;
             for (int y = 0; y < m_CityWidth; y++)
             {
                 for (int x = 0; x < m_CityDepth; x++)
@@ -151,6 +153,8 @@ namespace WizardsCode.Versus.Controllers
                     for (int i = 0; i < numOfCats; i++)
                     {
                         animal = Instantiate<AnimalController>(m_CatPrefab);
+                        animal.name = $"Cat {catIdx}";
+                        catIdx++;
                         block.AddAnimal(animal);
                         animal.OnAnimalAction += eventLogger.OnEventReceived;
                     }
@@ -159,6 +163,8 @@ namespace WizardsCode.Versus.Controllers
                     for (int i = 0; i < numOfDogs; i++)
                     {
                         animal = Instantiate<AnimalController>(m_DogPrefab);
+                        animal.name = $"Dog {dogIdx}";
+                        dogIdx++;
                         block.AddAnimal(animal);
                         animal.OnAnimalAction += eventLogger.OnEventReceived;
                     }
