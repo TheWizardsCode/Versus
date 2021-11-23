@@ -5,6 +5,7 @@ using static WizardsCode.Versus.Controllers.CityController;
 using WizardsCode.Versus.Controllers;
 using static WizardsCode.Versus.Controller.AnimalController;
 using System.Text;
+using NeoFPS;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -20,6 +21,18 @@ namespace WizardsCode.Versus.Controller
         Transform m_FactionMap;
         [SerializeField, Tooltip("The frequency, in seconds, the faction map should be updated. This is a costly operation on large maps so don't make it too frequent.")]
         float m_FactionMapUpdateFrequency = 1f;
+
+        SpawnPoint m_FpsSpawnPoint;
+
+        internal SpawnPoint GetFpsSpawnPoint()
+        {
+            if (m_FpsSpawnPoint == null)
+            {
+                m_FpsSpawnPoint = transform.GetComponentInChildren<SpawnPoint>();
+            }
+            return m_FpsSpawnPoint;
+        }
+
         [SerializeField, Tooltip("The number of excess faction members that need to be present for dominance. This is used to calculate a factions influence on the block. If a faction has a majority of this many on a block then it is considered to have dominance.")]
         int m_FactionMembersNeededForControl = 5;
 
@@ -73,7 +86,6 @@ namespace WizardsCode.Versus.Controller
         internal void AddAnimal(AnimalController animal)
         {
             animal.transform.SetParent(transform);
-            animal.transform.position = GetRandomPoint();
             animal.HomeBlock = this;
 
             switch (animal.m_Faction) {
