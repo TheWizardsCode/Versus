@@ -545,6 +545,8 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 3
+  m_CityBlockRoot: {fileID: 0}
+  m_ConsoleLoggerMinImportance: 2
 --- !u!4 &1779975901
 Transform:
   m_ObjectHideFlags: 0
