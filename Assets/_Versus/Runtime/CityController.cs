@@ -49,6 +49,10 @@ namespace WizardsCode.Versus.Controllers
         Transform m_CityBlockRoot;
         Camera m_TopDownCamera;
 
+        [Header("Debug")]
+        [SerializeField, Tooltip("The minimum level of logging information to display in the console.")]
+        Importance m_ConsoleLoggerMinImportance = Importance.Low;
+
         BlockController[,] cityBlocks;
         private EventLogger eventLogger;
 
@@ -63,7 +67,7 @@ namespace WizardsCode.Versus.Controllers
 
         private void Start()
         {
-            eventLogger = new EventLogger();
+            eventLogger = new EventLogger(m_ConsoleLoggerMinImportance);
 
             GenerateCity();
         }

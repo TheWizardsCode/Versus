@@ -85,7 +85,7 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
 
-            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} moved into {ToString()}."));
+            OnBlockUpdated(new BlockUpdateEvent($"{animal.m_Faction} moved into {ToString()}."));
         }
 
         internal void RemoveAnimal(AnimalController animal)
@@ -100,7 +100,7 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
 
-            OnBlockUpdated(new VersuseEvent($"{animal.m_Faction} moved out of {ToString()}."));
+            OnBlockUpdated(new BlockUpdateEvent($"{animal.m_Faction} moved out of {ToString()}."));
         }
 
         /// <summary>
@@ -135,18 +135,18 @@ namespace WizardsCode.Versus.Controller
                 switch (ControllingFaction)
                 {
                     case Faction.Cat:
-                        OnBlockUpdated(new VersuseEvent($"The cats have taken {ToString()}."));
+                        OnBlockUpdated(new BlockUpdateEvent($"The cats have taken {ToString()}.", Importance.High));
                         break;
                     case Faction.Dog:
-                        OnBlockUpdated(new VersuseEvent($"The dogs have taken {ToString()}."));
+                        OnBlockUpdated(new BlockUpdateEvent($"The dogs have taken {ToString()}.", Importance.High));
                         break;
                     case Faction.Neutral:
                         if (previousFaction == Faction.Cat)
                         {
-                            OnBlockUpdated(new VersuseEvent($"The dogs have weakened the cats hold on {ToString()}."));
+                            OnBlockUpdated(new BlockUpdateEvent($"The dogs have weakened the cats hold on {ToString()}, it is now a neutral zone.", Importance.High));
                         } else
                         {
-                            OnBlockUpdated(new VersuseEvent($"The cats have weakened the dogs hold on {ToString()}."));
+                            OnBlockUpdated(new BlockUpdateEvent($"The cats have weakened the dogs hold on {ToString()}, it is now a neutral zone (Normalized Influence: {NormalizedFactionInfluence}).", Importance.High));
                         }
                         break;
                 }

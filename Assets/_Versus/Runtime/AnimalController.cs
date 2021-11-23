@@ -64,7 +64,7 @@ namespace WizardsCode.Versus.Controller
             {
                 currentState = State.Flee;
                 moveTargetPosition = GetNewWanderPosition();
-                OnAnimalAction(new VersuseEvent($"{ToString()} as been hit by {from - to} units of repellent. They are fleeing from the source but not yet giving up this block."));
+                OnAnimalAction(new AnimalActionEvent($"{ToString()} as been hit by {from - to} units of repellent. They are fleeing from the source but not yet giving up this block."));
             }
 
             base.OnHealthChanged(from, to, critical, source);
@@ -78,7 +78,7 @@ namespace WizardsCode.Versus.Controller
                 isAlive = true;
                 currentState = State.Flee;
                 moveTargetPosition = GetFriendlyPositionOrDie();
-                OnAnimalAction(new VersuseEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
+                OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
             }
 
             switch (currentState)
@@ -112,7 +112,7 @@ namespace WizardsCode.Versus.Controller
                         go.transform.position = transform.position;
                         availableRepellent -= go.RequiredRepellent;
                         currentState = State.GatherRepellent;
-                        OnAnimalAction(new VersuseEvent($"{ToString()} placed a repellent mine at {transform.position}."));
+                        OnAnimalAction(new AnimalActionEvent($"{ToString()} placed a repellent mine at {transform.position}.", Importance.Low));
                     }
                     break;
                 case State.Flee:

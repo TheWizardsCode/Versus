@@ -9,18 +9,45 @@ namespace WizardsCode.Versus
     /// </summary>
     public class EventLogger
     {
+        Importance m_MinImportance;
+
+        public EventLogger(Importance minImportance)
+        {
+            m_MinImportance = minImportance;
+        }
+
         public void OnEventReceived(VersuseEvent versusEvent) {
-            Debug.Log($"{versusEvent.Description}");
+            if ((int)versusEvent.Importance >= (int)m_MinImportance)
+            {
+                Debug.Log($"{versusEvent.GetType().Name} : {versusEvent.Description}");
+            }
+        }
+    }
+    public enum Importance { Low, Medium, High }
+
+    public class VersuseEvent
+    {
+        public string Description;
+        public Importance Importance;
+
+        public VersuseEvent(string description, Importance importance)
+        {
+            Description = description;
+            Importance = importance;
         }
     }
 
-    public struct VersuseEvent
+    public class BlockUpdateEvent : VersuseEvent
     {
-        public string Description;
-
-        public VersuseEvent(string description)
+        public BlockUpdateEvent(string description, Importance importance = Importance.Medium) : base(description, importance)
         {
-            Description = description;
+        }
+    }
+
+    public class AnimalActionEvent : VersuseEvent
+    {
+        public AnimalActionEvent(string description, Importance importance = Importance.Medium) : base(description, importance)
+        {
         }
     }
 }
