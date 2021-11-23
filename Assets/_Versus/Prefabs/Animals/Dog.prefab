@@ -58,6 +58,7 @@ MonoBehaviour:
   m_RechargeRate: 0.1
   m_RechargeDelay: 5
   m_InterruptDamage: 1
+  m_RepellentGatheringSpeed: 0
   m_Faction: 1
   m_HomeBlock: {fileID: 0}
   m_Speed: 2
