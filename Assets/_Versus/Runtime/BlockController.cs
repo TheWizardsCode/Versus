@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using static WizardsCode.Versus.Controllers.CityController;
 using WizardsCode.Versus.Controllers;
 using static WizardsCode.Versus.Controller.AnimalController;
+using System.Text;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -27,7 +28,12 @@ namespace WizardsCode.Versus.Controller
         private List<AnimalController> m_DogsPresent = new List<AnimalController>();
         private List<AnimalController> m_CatsPresent = new List<AnimalController>();
 
+        public delegate void OnBlockUpdatedDelegate(VersuseEvent versusEvent);
+        public OnBlockUpdatedDelegate OnBlockUpdated;
+
         private float timeOfNextFactionMapUpdate = 0;
+        private Faction previousFaction;
+
         public CityController CityController { get; private set; }
 
         public Faction ControllingFaction
@@ -78,6 +84,8 @@ namespace WizardsCode.Versus.Controller
                     m_DogsPresent.Add(animal);
                     break;
             }
+
+            OnBlockUpdated(new BlockUpdateEvent($"{animal.m_Faction} moved into {ToString()}."));
         }
 
         internal void RemoveAnimal(AnimalController animal)
@@ -91,6 +99,8 @@ namespace WizardsCode.Versus.Controller
                     m_DogsPresent.Remove(animal);
                     break;
             }
+
+            OnBlockUpdated(new BlockUpdateEvent($"{animal.m_Faction} moved out of {ToString()}."));
         }
 
         /// <summary>
@@ -106,7 +116,6 @@ namespace WizardsCode.Versus.Controller
         private void Update()
         {
             if (Time.timeSinceLevelLoad < timeOfNextFactionMapUpdate) return;
-
             timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
 
             //OPTIMIZATION: if this is not in view of the camera there is no need to update the faction mesh
@@ -120,6 +129,29 @@ namespace WizardsCode.Versus.Controller
             }
 
             m_FactionMesh.colors32 = colors;
+
+            if (ControllingFaction != previousFaction)
+            {
+                switch (ControllingFaction)
+                {
+                    case Faction.Cat:
+                        OnBlockUpdated(new BlockUpdateEvent($"The cats have taken {ToString()}.", Importance.High));
+                        break;
+                    case Faction.Dog:
+                        OnBlockUpdated(new BlockUpdateEvent($"The dogs have taken {ToString()}.", Importance.High));
+                        break;
+                    case Faction.Neutral:
+                        if (previousFaction == Faction.Cat)
+                        {
+                            OnBlockUpdated(new BlockUpdateEvent($"The dogs have weakened the cats hold on {ToString()}, it is now a neutral zone.", Importance.High));
+                        } else
+                        {
+                            OnBlockUpdated(new BlockUpdateEvent($"The cats have weakened the dogs hold on {ToString()}, it is now a neutral zone (Normalized Influence: {NormalizedFactionInfluence}).", Importance.High));
+                        }
+                        break;
+                }
+                previousFaction = ControllingFaction;
+            }
         }
 
         /// <summary>
@@ -145,6 +177,11 @@ namespace WizardsCode.Versus.Controller
                     return 0.5f - influence;
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{name} {Coordinates}.";
         }
     }
 }

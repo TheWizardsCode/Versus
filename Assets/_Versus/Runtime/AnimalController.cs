@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Versus.Weapons;
@@ -7,7 +7,7 @@ using NeoFPS;
 namespace WizardsCode.Versus.Controller
 {
     /// <summary>
-    /// The animal controller is placed on each of the AI animals int he game and is responsible for managing their behaviour.
+    /// The animal controller is placed on each of the AI animals in the game and is responsible for managing their behaviour.
     /// </summary>
     public class AnimalController : RechargingHealthManager
     {
@@ -36,6 +36,9 @@ namespace WizardsCode.Versus.Controller
         private Vector3 moveTargetPosition;
         private float availableRepellent;
 
+        public delegate void OnAnimalActionDelegate(VersuseEvent versusEvent);
+        public OnAnimalActionDelegate OnAnimalAction;
+
         internal BlockController HomeBlock
         {
             get { return m_HomeBlock; }
@@ -57,10 +60,11 @@ namespace WizardsCode.Versus.Controller
 
         protected override void OnHealthChanged(float from, float to, bool critical, IDamageSource source)
         {
-            if (to < from)
+            if (to < from && to > 0)
             {
                 currentState = State.Flee;
                 moveTargetPosition = GetNewWanderPosition();
+                OnAnimalAction(new AnimalActionEvent($"{ToString()} as been hit by {from - to} units of repellent. They are fleeing from the source but not yet giving up this block."));
             }
 
             base.OnHealthChanged(from, to, critical, source);
@@ -74,6 +78,7 @@ namespace WizardsCode.Versus.Controller
                 isAlive = true;
                 currentState = State.Flee;
                 moveTargetPosition = GetFriendlyPositionOrDie();
+                OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
             }
 
             switch (currentState)
@@ -107,6 +112,7 @@ namespace WizardsCode.Versus.Controller
                         go.transform.position = transform.position;
                         availableRepellent -= go.RequiredRepellent;
                         currentState = State.GatherRepellent;
+                        OnAnimalAction(new AnimalActionEvent($"{ToString()} placed a repellent mine at {transform.position}.", Importance.Low));
                     }
                     break;
                 case State.Flee:
