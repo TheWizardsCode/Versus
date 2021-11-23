@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using WizardsCode.Versus.Weapons;
 using NeoFPS;
 
@@ -13,6 +11,15 @@ namespace WizardsCode.Versus.Controller
     {
         public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide }
         public enum Faction { Cat, Dog, Neutral }
+
+        [Space]
+
+        [Header("Attributes")]
+        [SerializeField, Tooltip("If set to true then the rate of resource gathering will be randomly set upon creation of an object with this controller attached. If set to false then the rate can be set here.")]
+        bool randomizeReppelentGatheringSpeed = true;
+        [SerializeField, Tooltip("The maximum rate at which this animal will collect repellent for making weaponry. Measured in repellent per second. If randomizeReppelentGatheringSpeed is true this value will be randomized between 0.01 and this value. If set to false it will be this amount precisely.")]
+        float m_RepellentGatheringSpeed;
+
         [Header("Faction")]
         [SerializeField, Tooltip("The faction this animal belongs to and fights for.")]
         public Faction m_Faction;
@@ -28,8 +35,6 @@ namespace WizardsCode.Versus.Controller
         [Header("Weapons")]
         [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
         Mine m_RepellentMinePrefab;
-        [SerializeField, Tooltip("The rate at which this animal will collect repellent for making weaponry. Measured in repellent per second.")]
-        float m_RepellentGatheringSpeed = 0.2f;
 
         private BlockController blockController;
         private State currentState = State.Idle;
@@ -95,7 +100,13 @@ namespace WizardsCode.Versus.Controller
                     }
                     break;
                 case State.GatherRepellent:
-                    availableRepellent += Time.deltaTime * m_RepellentGatheringSpeed;
+                    if (randomizeReppelentGatheringSpeed)
+                    {
+                        availableRepellent += Time.deltaTime * Random.Range(0.01f, m_RepellentGatheringSpeed);
+                    } else
+                    {
+                        availableRepellent += Time.deltaTime * m_RepellentGatheringSpeed;
+                    }
                     Rotate();
                     Move();
                     if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
