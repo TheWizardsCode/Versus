@@ -5,6 +5,8 @@ using NeoFPS.SinglePlayer;
 using NeoFPS;
 using WizardsCode.Versus.Controllers;
 using NeoSaveGames.Serialization;
+using WizardsCode.Versus.FPS;
+using WizardsCode.Versus.Controller;
 
 namespace WizardsCode.Versus
 {
@@ -14,7 +16,7 @@ namespace WizardsCode.Versus
         [SerializeField, NeoPrefabField(required = true), Tooltip("The player prefab to instantiate if none exists.")]
         FpsSoloPlayerController m_PlayerPrefab = null;
         [SerializeField, NeoPrefabField(required = true), Tooltip("The character prefab to use.")]
-        FpsSoloCharacter m_CharacterPrefab = null;
+        PlayerCharacter m_CharacterPrefab = null;
 
         [Space]
         [Header("Debug")]
@@ -58,10 +60,10 @@ namespace WizardsCode.Versus
             cityController = FindObjectOfType<CityController>();
 
             inGame = true;
-            Spawn(Player);
+            Spawn();
         }
 
-        public void Spawn(IController player)
+        public void Spawn()
         {
             if (!inGame)
             {
@@ -71,10 +73,15 @@ namespace WizardsCode.Versus
 
             NeoSerializedScene scene = GetComponent<NeoSerializedGameObject>().serializedScene;
 
-            var prototype = GetPlayerCharacterPrototype(player);
-            SpawnPoint spawnPoint = cityController.GetBlock(m_SpawnBlockCoordinates).GetFpsSpawnPoint();
-
-            if (spawnPoint.SpawnCharacter(prototype, player, true, scene) == null)
+            var prototype = GetPlayerCharacterPrototype(Player);
+            BlockController block = cityController.GetBlock(m_SpawnBlockCoordinates);
+            SpawnPoint spawnPoint = block.GetFpsSpawnPoint();
+            ICharacter character = spawnPoint.SpawnCharacter(prototype, Player, true, scene);
+            if (character != null)
+            {
+                ((PlayerCharacter)character).CurrentBlock = block;
+            }
+            else
             {
                 Debug.LogError("No valid spawn points found");
             }
