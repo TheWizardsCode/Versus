@@ -18,10 +18,14 @@ namespace WizardsCode.Versus.FPS
         {
             if (character == null) return;
 
-            BlockController newBlock = ((PlayerCharacter)character).CurrentBlock;
-            if (m_Block == newBlock) return;
+            ((PlayerCharacter)character).OnCurrentBlockChanged += OnCurrentBlockChanged;
+            OnCurrentBlockChanged(((PlayerCharacter)character).CurrentBlock);
+        }
 
-            if (m_Block != null) {
+        private void OnCurrentBlockChanged(BlockController newBlock)
+        {
+            if (m_Block != null)
+            {
                 m_Block.OnBlockUpdated -= OnBlockUpdated;
             }
 

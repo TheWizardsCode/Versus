@@ -6,6 +6,7 @@ using WizardsCode.Versus.Controllers;
 using static WizardsCode.Versus.Controller.AnimalController;
 using System.Text;
 using NeoFPS;
+using WizardsCode.Versus.FPS;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -80,6 +81,14 @@ namespace WizardsCode.Versus.Controller
             {
                 animal.HomeBlock.RemoveAnimal(animal);
                 AddAnimal(animal);
+                return;
+            }
+
+            PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
+            if (character)
+            {
+                character.CurrentBlock = this;
+                
             }
         }
 
@@ -181,12 +190,12 @@ namespace WizardsCode.Versus.Controller
                 } else if (m_DogsPresent.Count > m_CatsPresent.Count)
                 {
                     float influence = (float)(m_DogsPresent.Count - m_CatsPresent.Count) / m_FactionMembersNeededForControl;
-                    return 0.5f + influence;
+                    return Mathf.Clamp01(0.5f + (influence / 2));
                 }
                 else
                 {
                     float influence = (float)(m_CatsPresent.Count - m_DogsPresent.Count) / m_FactionMembersNeededForControl;
-                    return 0.5f - influence;
+                    return Mathf.Clamp01(0.5f - (influence / 2));
                 }
             }
         }
