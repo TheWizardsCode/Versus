@@ -29,7 +29,10 @@ namespace WizardsCode.Versus.FPS
             {
                 if (m_Block != value) {
                     m_Block = value;
-                    OnCurrentBlockChanged.Invoke(m_Block);
+                    if (OnCurrentBlockChanged != null)
+                    {
+                        OnCurrentBlockChanged.Invoke(m_Block);
+                    }
                 }
             }
         }

@@ -50,6 +50,8 @@ namespace WizardsCode.Versus.Controller
 
         public CityController CityController { get; private set; }
 
+        PlayerCharacter player = null;
+
         public Faction ControllingFaction
         {
             get
@@ -77,7 +79,7 @@ namespace WizardsCode.Versus.Controller
         private void OnTriggerEnter(Collider other)
         {
             AnimalController animal = other.GetComponentInParent<AnimalController>();
-            if (animal)
+            if (animal && animal.currentState != State.Attack)
             {
                 animal.HomeBlock.RemoveAnimal(animal);
                 AddAnimal(animal);
@@ -88,7 +90,15 @@ namespace WizardsCode.Versus.Controller
             if (character)
             {
                 character.CurrentBlock = this;
-                
+                player = character;
+            }
+        }
+        private void OnTriggerExit(Collider other)
+        {
+            PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
+            if (character)
+            {
+                player = null;
             }
         }
 
@@ -136,8 +146,27 @@ namespace WizardsCode.Versus.Controller
 
         private void Update()
         {
-            if (Time.timeSinceLevelLoad < timeOfNextFactionMapUpdate) return;
-            timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
+            if (Time.timeSinceLevelLoad >= timeOfNextFactionMapUpdate) {
+                timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
+                UpdateFactionMap();
+            }
+            UpdateAnimalAI();
+        }
+
+        private void UpdateAnimalAI()
+        {
+            if (player)
+            {
+                for (int i = 0; i < m_DogsPresent.Count; i++)
+                {
+                    m_DogsPresent[i].currentState = State.Attack;
+                    m_DogsPresent[i].target = player.transform;
+                }
+            }
+        }
+
+        private void UpdateFactionMap()
+        {
 
             //OPTIMIZATION: if this is not in view of the camera there is no need to update the faction mesh
             Vector3[] vertices = m_FactionMesh.vertices;
@@ -165,7 +194,8 @@ namespace WizardsCode.Versus.Controller
                         if (previousFaction == Faction.Cat)
                         {
                             OnBlockUpdated(new BlockUpdateEvent($"The dogs have weakened the cats hold on {ToString()}, it is now a neutral zone.", Importance.High));
-                        } else
+                        }
+                        else
                         {
                             OnBlockUpdated(new BlockUpdateEvent($"The cats have weakened the dogs hold on {ToString()}, it is now a neutral zone (Normalized Influence: {NormalizedFactionInfluence}).", Importance.High));
                         }

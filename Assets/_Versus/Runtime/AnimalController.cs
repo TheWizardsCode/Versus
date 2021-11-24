@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using WizardsCode.Versus.Weapons;
 using NeoFPS;
+using System;
+using Random = UnityEngine.Random;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -9,7 +11,7 @@ namespace WizardsCode.Versus.Controller
     /// </summary>
     public class AnimalController : RechargingHealthManager
     {
-        public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide }
+        public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide, Attack }
         public enum Faction { Cat, Dog, Neutral }
 
         [Space]
@@ -32,12 +34,24 @@ namespace WizardsCode.Versus.Controller
         [SerializeField, Tooltip("The speed this animal rotates under normal walking conditions.")]
         float m_RotationSpeed = 25;
 
-        [Header("Weapons")]
+        [Header("Attack")]
+        [SerializeField, Tooltip("The distance from a target the animal needs to be before it can attack.")]
+        float m_AttackDistance = 0.1f;
+        [SerializeField, Tooltip("The frequency at which this animal will be able to attack once in range.")]
+        float m_AttackFrequency = 1.2f;
+        [SerializeField, Tooltip("The damage done by this animal when it attacks")]
+        float m_Damage = 7.5f;
+        [SerializeField, Tooltip("The chase distance is how far from the center of the home block this animal will chase a target before giving up.")]
+        float m_ChaseDistance = 100;
         [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
         Mine m_RepellentMinePrefab;
 
         private BlockController blockController;
-        private State currentState = State.Idle;
+        internal State currentState = State.Idle;
+        internal Transform target;
+        private float sqrChaseDistance = 0;
+        private float sqrAttackDistance = 0;
+        private float timeOfNextAttack = 0;
         private Vector3 moveTargetPosition;
         private float availableRepellent;
 
@@ -61,6 +75,8 @@ namespace WizardsCode.Versus.Controller
         private void Start()
         {
             blockController = GetComponentInParent<BlockController>();
+            sqrChaseDistance = m_ChaseDistance * m_ChaseDistance;
+            sqrAttackDistance = m_AttackDistance * m_AttackDistance;
         }
 
         protected override void OnHealthChanged(float from, float to, bool critical, IDamageSource source)
@@ -107,7 +123,6 @@ namespace WizardsCode.Versus.Controller
                     {
                         availableRepellent += Time.deltaTime * m_RepellentGatheringSpeed;
                     }
-                    Rotate();
                     Move();
                     if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
                     {
@@ -115,7 +130,6 @@ namespace WizardsCode.Versus.Controller
                     }
                     break;
                 case State.PlaceRepellentMine:
-                    Rotate();
                     Move();
                     if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
                     {
@@ -127,7 +141,6 @@ namespace WizardsCode.Versus.Controller
                     }
                     break;
                 case State.Flee:
-                    Rotate();
                     Move(2);
                     if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
                     {
@@ -140,6 +153,29 @@ namespace WizardsCode.Versus.Controller
                         currentState = State.Idle;
                     }
                     break;
+                case State.Attack:
+                    float distanceFromHome = Vector3.SqrMagnitude(blockController.transform.position - transform.position);
+                    if (distanceFromHome > sqrChaseDistance)
+                    {
+                        currentState = State.Idle;
+                        break;
+                    }
+
+                    float distanceToTarget = Vector3.SqrMagnitude(target.position - transform.position);
+                    if (distanceToTarget < sqrAttackDistance)
+                    {
+                        if (Time.timeSinceLevelLoad > timeOfNextAttack)
+                        {
+                            target.GetComponentInChildren<IDamageHandler>().AddDamage(m_Damage);
+                            timeOfNextAttack = Time.timeSinceLevelLoad + m_AttackFrequency;
+                        }
+                    }
+                    else
+                    {
+                        moveTargetPosition = target.position;
+                        Move(2);
+                    }
+                    break;
             }
         }
 
@@ -150,6 +186,7 @@ namespace WizardsCode.Versus.Controller
 
         void Move(float speedMultiplier = 1)
         {
+            Rotate();
             float step = m_Speed * speedMultiplier * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, moveTargetPosition, step);
         }
