@@ -34,7 +34,7 @@ namespace WizardsCode.Versus.FPS
             UpdateGUI();
         }
 
-        private void OnBlockUpdated(VersuseEvent versusEvent)
+        private void OnBlockUpdated(BlockController block, VersuseEvent versusEvent)
         {
             UpdateGUI();
         }
