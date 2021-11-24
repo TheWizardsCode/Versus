@@ -90,7 +90,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7733702203138555149}
-  m_Layer: 16
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 7733702203876217237}
   - component: {fileID: 7733702203876217242}
   - component: {fileID: 9067451146836330593}
-  m_Layer: 16
+  m_Layer: 0
   m_Name: Block Dog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
