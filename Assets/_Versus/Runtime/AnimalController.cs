@@ -3,6 +3,7 @@ using WizardsCode.Versus.Weapons;
 using NeoFPS;
 using System;
 using Random = UnityEngine.Random;
+using System.Collections.Generic;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -35,6 +36,8 @@ namespace WizardsCode.Versus.Controller
         float m_RotationSpeed = 25;
 
         [Header("Attack")]
+        [SerializeField, Tooltip("The average frequency at which the dog will scan for enemies. Note that when in FPS mode dogs will always attack a player who enters their block. This is for inter-animal fights.")]
+        float m_EnemyScanFrequency = 2f;
         [SerializeField, Tooltip("The distance from a target the animal needs to be before it can attack.")]
         float m_AttackDistance = 0.1f;
         [SerializeField, Tooltip("The frequency at which this animal will be able to attack once in range.")]
@@ -52,6 +55,7 @@ namespace WizardsCode.Versus.Controller
         private float sqrChaseDistance = 0;
         private float sqrAttackDistance = 0;
         private float timeOfNextAttack = 0;
+        private float timeOfNextEnemyScan = 0;
         private Vector3 moveTargetPosition;
         private float availableRepellent;
 
@@ -100,6 +104,12 @@ namespace WizardsCode.Versus.Controller
                 currentState = State.Flee;
                 moveTargetPosition = GetFriendlyPositionOrDie();
                 OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
+            }
+
+            if (Time.timeSinceLevelLoad > timeOfNextEnemyScan)
+            {
+                ScanForEnemies();
+                timeOfNextEnemyScan = Time.timeSinceLevelLoad + m_EnemyScanFrequency * Random.Range(0.9f, 1.1f);
             }
 
             switch (currentState)
@@ -176,6 +186,33 @@ namespace WizardsCode.Versus.Controller
                         Move(2);
                     }
                     break;
+            }
+        }
+
+        /// <summary>
+        /// If the animal is not already in an attack state, or in a Flee state, scan the area for enemies. If one is spotted within a reasonable range then make it a target and attack.
+        /// </summary>
+        void ScanForEnemies()
+        {
+            if (currentState == State.Attack || currentState == State.Flee) return;
+
+            List<AnimalController> enemies = blockController.GetEnemiesOf(m_Faction);
+            float sqrDistance = float.MaxValue;
+            AnimalController nearest = null;
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                float distance = Vector3.SqrMagnitude(enemies[i].transform.position - transform.position);
+                if (distance < sqrDistance)
+                {
+                    nearest = enemies[i];
+                    sqrDistance = distance;
+                }
+            }
+
+            if (sqrDistance < m_ChaseDistance / 2)
+            {
+                target = nearest.transform;
+                currentState = State.Attack;
             }
         }
 
