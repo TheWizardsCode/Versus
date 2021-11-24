@@ -5,6 +5,8 @@ using static WizardsCode.Versus.Controllers.CityController;
 using WizardsCode.Versus.Controllers;
 using static WizardsCode.Versus.Controller.AnimalController;
 using System.Text;
+using NeoFPS;
+using WizardsCode.Versus.FPS;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -20,6 +22,18 @@ namespace WizardsCode.Versus.Controller
         Transform m_FactionMap;
         [SerializeField, Tooltip("The frequency, in seconds, the faction map should be updated. This is a costly operation on large maps so don't make it too frequent.")]
         float m_FactionMapUpdateFrequency = 1f;
+
+        SpawnPoint m_FpsSpawnPoint;
+
+        internal SpawnPoint GetFpsSpawnPoint()
+        {
+            if (m_FpsSpawnPoint == null)
+            {
+                m_FpsSpawnPoint = transform.GetComponentInChildren<SpawnPoint>();
+            }
+            return m_FpsSpawnPoint;
+        }
+
         [SerializeField, Tooltip("The number of excess faction members that need to be present for dominance. This is used to calculate a factions influence on the block. If a faction has a majority of this many on a block then it is considered to have dominance.")]
         int m_FactionMembersNeededForControl = 5;
 
@@ -35,6 +49,8 @@ namespace WizardsCode.Versus.Controller
         private Faction previousFaction;
 
         public CityController CityController { get; private set; }
+
+        PlayerCharacter player = null;
 
         public Faction ControllingFaction
         {
@@ -63,17 +79,32 @@ namespace WizardsCode.Versus.Controller
         private void OnTriggerEnter(Collider other)
         {
             AnimalController animal = other.GetComponentInParent<AnimalController>();
-            if (animal)
+            if (animal && animal.currentState != State.Attack)
             {
                 animal.HomeBlock.RemoveAnimal(animal);
                 AddAnimal(animal);
+                return;
+            }
+
+            PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
+            if (character)
+            {
+                character.CurrentBlock = this;
+                player = character;
+            }
+        }
+        private void OnTriggerExit(Collider other)
+        {
+            PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
+            if (character)
+            {
+                player = null;
             }
         }
 
         internal void AddAnimal(AnimalController animal)
         {
             animal.transform.SetParent(transform);
-            animal.transform.position = GetRandomPoint();
             animal.HomeBlock = this;
 
             switch (animal.m_Faction) {
@@ -115,8 +146,27 @@ namespace WizardsCode.Versus.Controller
 
         private void Update()
         {
-            if (Time.timeSinceLevelLoad < timeOfNextFactionMapUpdate) return;
-            timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
+            if (Time.timeSinceLevelLoad >= timeOfNextFactionMapUpdate) {
+                timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
+                UpdateFactionMap();
+            }
+            UpdateAnimalAI();
+        }
+
+        private void UpdateAnimalAI()
+        {
+            if (player)
+            {
+                for (int i = 0; i < m_DogsPresent.Count; i++)
+                {
+                    m_DogsPresent[i].currentState = State.Attack;
+                    m_DogsPresent[i].target = player.transform;
+                }
+            }
+        }
+
+        private void UpdateFactionMap()
+        {
 
             //OPTIMIZATION: if this is not in view of the camera there is no need to update the faction mesh
             Vector3[] vertices = m_FactionMesh.vertices;
@@ -144,7 +194,8 @@ namespace WizardsCode.Versus.Controller
                         if (previousFaction == Faction.Cat)
                         {
                             OnBlockUpdated(new BlockUpdateEvent($"The dogs have weakened the cats hold on {ToString()}, it is now a neutral zone.", Importance.High));
-                        } else
+                        }
+                        else
                         {
                             OnBlockUpdated(new BlockUpdateEvent($"The cats have weakened the dogs hold on {ToString()}, it is now a neutral zone (Normalized Influence: {NormalizedFactionInfluence}).", Importance.High));
                         }
@@ -169,12 +220,12 @@ namespace WizardsCode.Versus.Controller
                 } else if (m_DogsPresent.Count > m_CatsPresent.Count)
                 {
                     float influence = (float)(m_DogsPresent.Count - m_CatsPresent.Count) / m_FactionMembersNeededForControl;
-                    return 0.5f + influence;
+                    return Mathf.Clamp01(0.5f + (influence / 2));
                 }
                 else
                 {
                     float influence = (float)(m_CatsPresent.Count - m_DogsPresent.Count) / m_FactionMembersNeededForControl;
-                    return 0.5f - influence;
+                    return Mathf.Clamp01(0.5f - (influence / 2));
                 }
             }
         }

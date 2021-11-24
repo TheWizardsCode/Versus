@@ -479,7 +479,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1208
+  m_VersionIndex: 1211
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -671,6 +671,8 @@ MonoBehaviour:
   m_HomeBlock: {fileID: 0}
   m_Speed: 2
   m_RotationSpeed: 5
+  m_AttackDistance: 0.75
+  m_ChaseDistance: 100
   m_RepellentMinePrefab: {fileID: 4089889715819367434, guid: fe87223e95d15614eb84f96e3eb805fd, type: 3}
 --- !u!54 &-5499577801304040804
 Rigidbody:

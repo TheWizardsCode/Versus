@@ -161,6 +161,7 @@ namespace WizardsCode.Versus.Controllers
                         catIdx++;
                         block.AddAnimal(animal);
                         animal.OnAnimalAction += eventLogger.OnEventReceived;
+                        animal.transform.position = block.GetRandomPoint();
                     }
 
                     int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
@@ -170,6 +171,7 @@ namespace WizardsCode.Versus.Controllers
                         animal.name = $"Dog {dogIdx}";
                         dogIdx++;
                         block.AddAnimal(animal);
+                        animal.transform.position = block.GetRandomPoint();
                         animal.OnAnimalAction += eventLogger.OnEventReceived;
                     }
 
@@ -181,6 +183,11 @@ namespace WizardsCode.Versus.Controllers
         internal BlockController GetBlock(int x, int y)
         {
             return cityBlocks[x, y];
+        }
+
+        internal BlockController GetBlock(Vector2Int coords)
+        {
+            return cityBlocks[coords.x, coords.y];
         }
     }
 }
