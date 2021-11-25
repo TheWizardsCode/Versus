@@ -50,7 +50,6 @@ namespace WizardsCode.Versus.Controller
         [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
         Mine m_RepellentMinePrefab;
 
-        private BlockController blockController;
         internal State currentState = State.Idle;
         internal Transform attackTarget;
         private float sqrChaseDistance = 0;
@@ -85,7 +84,7 @@ namespace WizardsCode.Versus.Controller
 
         private void Start()
         {
-            blockController = GetComponentInParent<BlockController>();
+            HomeBlock = GetComponentInParent<BlockController>();
             sqrChaseDistance = m_ChaseDistance * m_ChaseDistance;
             sqrAttackDistance = m_AttackDistance * m_AttackDistance;
         }
@@ -129,7 +128,7 @@ namespace WizardsCode.Versus.Controller
                     else if (Random.value < 0.02f)
                     {
                         if (health >= healthMax * 0.8f &&
-                            blockController.GetPriority(m_Faction) == Priority.Low)
+                            HomeBlock.GetPriority(m_Faction) == Priority.Low)
                         {
                             ExpandToBlock = GetNearbyHighPriorityBlock();
                             if (ExpandToBlock != null)
@@ -190,7 +189,7 @@ namespace WizardsCode.Versus.Controller
                     }
                     break;
                 case State.Attack:
-                    float distanceFromHome = Vector3.SqrMagnitude(blockController.transform.position - transform.position);
+                    float distanceFromHome = Vector3.SqrMagnitude(HomeBlock.transform.position - transform.position);
                     if (distanceFromHome > sqrChaseDistance)
                     {
                         currentState = State.Idle;
@@ -230,7 +229,7 @@ namespace WizardsCode.Versus.Controller
         {
             if (currentState == State.Attack || currentState == State.Flee) return;
 
-            List<AnimalController> enemies = blockController.GetEnemiesOf(m_Faction);
+            List<AnimalController> enemies = HomeBlock.GetEnemiesOf(m_Faction);
             float sqrDistance = float.MaxValue;
             AnimalController nearest = null;
             for (int i = 0; i < enemies.Count; i++)
@@ -245,14 +244,14 @@ namespace WizardsCode.Versus.Controller
 
             if (sqrDistance < m_ChaseDistance / 2)
             {
-                target = nearest.transform;
+                attackTarget = nearest.transform;
                 currentState = State.Attack;
             }
         }
 
         Vector3 GetNewWanderPosition()
         {
-            return blockController.GetRandomPoint();
+            return HomeBlock.GetRandomPoint();
         }
 
         void Move(float speedMultiplier = 1)
