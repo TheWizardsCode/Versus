@@ -3,6 +3,7 @@ using WizardsCode.Versus.Weapons;
 using NeoFPS;
 using System;
 using Random = UnityEngine.Random;
+using static WizardsCode.Versus.Controller.BlockController;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -11,7 +12,7 @@ namespace WizardsCode.Versus.Controller
     /// </summary>
     public class AnimalController : RechargingHealthManager
     {
-        public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide, Attack }
+        public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide, Attack, Expand }
         public enum Faction { Cat, Dog, Neutral }
 
         [Space]
@@ -48,7 +49,7 @@ namespace WizardsCode.Versus.Controller
 
         private BlockController blockController;
         internal State currentState = State.Idle;
-        internal Transform target;
+        internal Transform attackTarget;
         private float sqrChaseDistance = 0;
         private float sqrAttackDistance = 0;
         private float timeOfNextAttack = 0;
@@ -57,6 +58,12 @@ namespace WizardsCode.Versus.Controller
 
         public delegate void OnAnimalActionDelegate(VersuseEvent versusEvent);
         public OnAnimalActionDelegate OnAnimalAction;
+
+        /// <summary>
+        /// The expand to block indicates the block that this Animal is planning on making its home.
+        /// If this is null then the animal is perfectly happy in the current HomeBlock and will stay there.
+        /// </summary>
+        internal BlockController ExpandToBlock { get; set; }
 
         internal BlockController HomeBlock
         {
@@ -111,15 +118,34 @@ namespace WizardsCode.Versus.Controller
                     }
                     else if (Random.value < 0.02f)
                     {
-                        currentState = State.GatherRepellent;
-                        moveTargetPosition = GetNewWanderPosition();
+                        if (health >= healthMax * 0.8f &&
+                            blockController.GetPriority(m_Faction) == Priority.Low)
+                        {
+                            ExpandToBlock = GetNearbyHighPriorityBlock();
+                            if (ExpandToBlock != null)
+                            {
+                                OnAnimalAction(new AnimalActionEvent($"{ToString()} is leaving {HomeBlock} in an attempt to take {ExpandToBlock} for the {m_Faction}s.", Importance.Medium));
+                                moveTargetPosition = ExpandToBlock.GetRandomPoint();
+                                currentState = State.Expand;
+                            } else
+                            {
+                                currentState = State.GatherRepellent;
+                                moveTargetPosition = GetNewWanderPosition();
+                            }
+                        }
+                        else
+                        {
+                            currentState = State.GatherRepellent;
+                            moveTargetPosition = GetNewWanderPosition();
+                        }
                     }
                     break;
                 case State.GatherRepellent:
                     if (randomizeReppelentGatheringSpeed)
                     {
                         availableRepellent += Time.deltaTime * Random.Range(0.01f, m_RepellentGatheringSpeed);
-                    } else
+                    }
+                    else
                     {
                         availableRepellent += Time.deltaTime * m_RepellentGatheringSpeed;
                     }
@@ -148,7 +174,7 @@ namespace WizardsCode.Versus.Controller
                     }
                     break;
                 case State.Hide:
-                    if (health >= healthMax)
+                    if (health >= healthMax * 0.8f)
                     {
                         currentState = State.Idle;
                     }
@@ -161,19 +187,27 @@ namespace WizardsCode.Versus.Controller
                         break;
                     }
 
-                    float distanceToTarget = Vector3.SqrMagnitude(target.position - transform.position);
+                    float distanceToTarget = Vector3.SqrMagnitude(attackTarget.position - transform.position);
                     if (distanceToTarget < sqrAttackDistance)
                     {
                         if (Time.timeSinceLevelLoad > timeOfNextAttack)
                         {
-                            target.GetComponentInChildren<IDamageHandler>().AddDamage(m_Damage);
+                            attackTarget.GetComponentInChildren<IDamageHandler>().AddDamage(m_Damage);
                             timeOfNextAttack = Time.timeSinceLevelLoad + m_AttackFrequency;
                         }
                     }
                     else
                     {
-                        moveTargetPosition = target.position;
+                        moveTargetPosition = attackTarget.position;
                         Move(2);
+                    }
+                    break;
+                case State.Expand:
+                    Move(1.5f);
+                    distanceToTarget = Vector3.SqrMagnitude(moveTargetPosition - transform.position);
+                    if (distanceToTarget < sqrAttackDistance)
+                    {
+                        currentState = State.Idle;
                     }
                     break;
             }
@@ -280,6 +314,57 @@ namespace WizardsCode.Versus.Controller
                 Die();
                 return Vector3.zero; // this will never be used as the Die method will destroy the animal
             }
+        }
+        
+        /// <summary>
+        /// Find a block that is within x blocks fo the current home block and is marked as high priority by the director.
+        /// If no block is found then return null.
+        /// </summary>
+        /// <returns>A high priority block within x blocks of the current homes directory, or null if none found.</returns>
+        private BlockController GetNearbyHighPriorityBlock(int maxDistance = 3)
+        {
+            if (HomeBlock == null) return null;
+
+            int x = HomeBlock.Coordinates.x;
+            int y = HomeBlock.Coordinates.y;
+
+            BlockController targetBlock = null;
+            for (int d = 1; d < maxDistance; d++)
+            {
+                for (int i = 0; i < d + 1; i++)
+                {
+                    int x1 = x - d + i;
+                    int y1 = y - i;
+
+                    if ((x1 != x || y1 != y)
+                        && (x1 >= 0 && x1 < HomeBlock.CityController.Width)
+                        && (y1 >= 0 && y1 < HomeBlock.CityController.Depth))
+                    {
+                        if (HomeBlock.CityController.GetBlock(x1, y1).GetPriority(m_Faction) == Priority.High)
+                        {
+                            targetBlock = HomeBlock.CityController.GetBlock(x1, y1);
+                            break;
+                        }
+                    }
+
+                    int x2 = x + d - i;
+                    int y2 = y + i;
+
+                    if ((x2 != x || y2 != y)
+                        && (x2 >= 0 && x2 < HomeBlock.CityController.Width)
+                        && (y2 >= 0 && y2 < HomeBlock.CityController.Depth))
+                    {
+                        if (HomeBlock.CityController.GetBlock(x2, y2).GetPriority(m_Faction) == Priority.High)
+                        {
+                            targetBlock = HomeBlock.CityController.GetBlock(x2, y2);
+                            break;
+                        }
+                    }
+                }
+
+                if (targetBlock != null) break;
+            }
+            return targetBlock;
         }
 
         void Die() {

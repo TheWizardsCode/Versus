@@ -12,7 +12,7 @@ namespace WizardsCode.Versus.Controller
 {
     public class BlockController : MonoBehaviour
     {
-        public enum Priority { Low, Medium, High};
+        public enum Priority { Low, Medium, High, Breed};
 
         [Header("Meta Data")]
         [HideInInspector, SerializeField, Tooltip("The x,y coordinates of this block within the city.")]
@@ -31,7 +31,9 @@ namespace WizardsCode.Versus.Controller
         [SerializeField, Tooltip("The frequency, in seconds, the faction map should be updated. This is a costly operation on large maps so don't make it too frequent.")]
         float m_FactionMapUpdateFrequency = 1f;
 
+        [Header("Debug")]
         [SerializeField, Tooltip("READ ONLY: This text field will be updated with a description of the blocks status in play mode.")]
+        [TextArea(6,10)]
         string m_DebugInfo = "Available in Play Mode only.";
 
         private List<AnimalController> m_DogsPresent = new List<AnimalController>();
@@ -110,6 +112,18 @@ namespace WizardsCode.Versus.Controller
             }
         }
 
+        internal Priority GetPriority(Faction faction)
+        {
+            if (faction == Faction.Cat)
+            {
+                return m_CatPriority;
+            }
+            else
+            {
+                return m_DogPriority;
+            }
+        }
+
         internal SpawnPoint GetFpsSpawnPoint()
         {
             if (m_FpsSpawnPoint == null)
@@ -122,9 +136,17 @@ namespace WizardsCode.Versus.Controller
         private void OnTriggerEnter(Collider other)
         {
             AnimalController animal = other.GetComponentInParent<AnimalController>();
-            if (animal && animal.currentState != State.Attack)
+            if (animal && animal.currentState != State.Attack && animal.HomeBlock != this)
             {
-                animal.HomeBlock.RemoveAnimal(animal);
+                if (animal.currentState == State.Expand && animal.ExpandToBlock != this)
+                {
+                    return;
+                }
+
+                if (animal.HomeBlock != null)
+                {
+                    animal.HomeBlock.RemoveAnimal(animal);
+                }
                 AddAnimal(animal);
                 return;
             }
@@ -136,6 +158,7 @@ namespace WizardsCode.Versus.Controller
                 player = character;
             }
         }
+
         private void OnTriggerExit(Collider other)
         {
             PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
@@ -159,7 +182,7 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
 
-            OnBlockUpdated(this, new BlockUpdateEvent($"{animal.m_Faction} moved into {ToString()}."));
+            OnBlockUpdated(this, new BlockUpdateEvent($"The {animal.m_Faction} called {animal} moved into {ToString()}."));
         }
 
         internal void RemoveAnimal(AnimalController animal)
@@ -174,7 +197,7 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
 
-            OnBlockUpdated(this, new BlockUpdateEvent($"{animal.m_Faction} moved out of {ToString()}."));
+            OnBlockUpdated(this, new BlockUpdateEvent($"The {animal.m_Faction} called {animal} moved out of {ToString()}."));
         }
 
         /// <summary>
@@ -207,7 +230,7 @@ namespace WizardsCode.Versus.Controller
                 for (int i = 0; i < m_DogsPresent.Count; i++)
                 {
                     m_DogsPresent[i].currentState = State.Attack;
-                    m_DogsPresent[i].target = player.transform;
+                    m_DogsPresent[i].attackTarget = player.transform;
                 }
             }
         }
