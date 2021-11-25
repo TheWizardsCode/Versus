@@ -669,11 +669,12 @@ MonoBehaviour:
   m_RepellentGatheringSpeed: 0.45
   m_Faction: 0
   m_HomeBlock: {fileID: 0}
-  m_Speed: 2
-  m_RotationSpeed: 5
+  m_Speed: 3
+  m_RotationSpeed: 8
+  m_EnemyScanFrequency: 2
   m_AttackDistance: 0.75
   m_AttackFrequency: 1.2
-  m_Damage: 7.5
+  m_Damage: 5
   m_ChaseDistance: 100
   m_RepellentMinePrefab: {fileID: 4089889715819367434, guid: fe87223e95d15614eb84f96e3eb805fd, type: 3}
 --- !u!54 &-5499577801304040804
