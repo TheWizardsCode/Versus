@@ -670,10 +670,17 @@ namespace WizardsCode.Versus.Controller
                 currentState = State.Breed;
                 timeToRevaluateState = Time.timeSinceLevelLoad + m_BreedingDuration;
             }
+            else if (HomeBlock.GetPriority(m_Faction) == Priority.High)
+            {
+                currentState = State.GatherRepellent;
+            }
             else if (Random.value < 0.02f)
             {
-                if (health >= healthMax * 0.8f &&
-                    HomeBlock.GetPriority(m_Faction) == Priority.Low)
+                if (
+                    health >= healthMax * 0.8f 
+                    && (HomeBlock.GetPriority(m_Faction) == Priority.Low 
+                        || (HomeBlock.GetEnemiesOf(m_Faction).Count == 0 && HomeBlock.GetFriendsOf(m_Faction).Count > 1.4 * HomeBlock.FactionMembersForDominance))
+                   )
                 {
                     SetToExpandStateIfPossible();
                 }
