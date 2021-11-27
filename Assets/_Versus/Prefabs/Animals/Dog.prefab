@@ -65,6 +65,11 @@ MonoBehaviour:
   m_Speed: 2
   m_RotationSpeed: 5
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  m_BreedingChance: 0.02
+  m_BreedingDuration: 120
+>>>>>>> put a limit on the number of animals in a faction
 =======
   m_BreedingChance: 0.02
   m_BreedingDuration: 120
