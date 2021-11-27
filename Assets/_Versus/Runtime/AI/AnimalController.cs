@@ -331,6 +331,12 @@ namespace WizardsCode.Versus.Controller
             AnimalController nearest = null;
             for (int i = 0; i < enemies.Count; i++)
             {
+                //OPTIMIZATION under some circumstance an enemy can be destroyed and still be present, not sure how. For now just skip it.
+                if (enemies[i] == null)
+                {
+                    continue;
+                }
+
                 float distance = Vector3.SqrMagnitude(enemies[i].transform.position - transform.position);
                 if (distance < sqrDistance)
                 {
@@ -395,7 +401,7 @@ namespace WizardsCode.Versus.Controller
                     if ((x1 != x || y1 != y)
                         && (x1 >= 0 && x1 < HomeBlock.CityController.Width)
                         && (y1 >= 0 && y1 < HomeBlock.CityController.Depth)) {
-                        if (HomeBlock.CityController.GetBlock(x1, y1).ControllingFaction == m_Faction)
+                        if (HomeBlock.CityController.GetBlock(x1, y1).DominantFaction == m_Faction)
                         {
                             targetBlock = HomeBlock.CityController.GetBlock(x1, y1);
                             break;
@@ -409,7 +415,7 @@ namespace WizardsCode.Versus.Controller
                         && (x2 >= 0 && x2 < HomeBlock.CityController.Width)
                         && (y2 >= 0 && y2 < HomeBlock.CityController.Depth))
                     {
-                        if (HomeBlock.CityController.GetBlock(x2, y2).ControllingFaction == m_Faction)
+                        if (HomeBlock.CityController.GetBlock(x2, y2).DominantFaction == m_Faction)
                         {
                             targetBlock = HomeBlock.CityController.GetBlock(x2, y2);
                             break;
@@ -418,34 +424,6 @@ namespace WizardsCode.Versus.Controller
                 }
                 
                 if (targetBlock != null) break;
-
-                /*
-                for (int i = 1; i < d; i++)
-                {
-                    int x1 = x - i;
-                    int y1 = y + d - i;
-
-                    if ((x1 != x || y1 != y)
-                        && (x1 >= 0 && x1 < HomeBlock.CityController.Width)
-                        && (y1 >= 0 && y1 < HomeBlock.CityController.Depth))
-                    {
-                        targetBlock = HomeBlock.CityController.GetBlock(x1, y1);
-                        break;
-                    }
-
-                    int x2 = x + i;
-                    int y2 = y - d + i;
-                    if ((x2 != x || y2 != y)
-                        && (x2 >= 0 && x2 < HomeBlock.CityController.Width)
-                        && (y2 >= 0 && y2 < HomeBlock.CityController.Depth))
-                    {
-                        targetBlock = HomeBlock.CityController.GetBlock(x2, y2);
-                        break;
-                    }
-                }
-
-                if (targetBlock != null) break;
-                */
             }
 
             if (targetBlock != null)
@@ -510,7 +488,9 @@ namespace WizardsCode.Versus.Controller
             return targetBlock;
         }
 
-        void Die() {
+        void Die()
+        {
+            HomeBlock.RemoveAnimal(this);
             if (OnDeath != null)
             {
                 OnDeath.Invoke(this);

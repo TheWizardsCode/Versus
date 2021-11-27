@@ -21,9 +21,8 @@ namespace WizardsCode.Versus.Controller
         internal Vector2 m_Size = new Vector2(100, 100);
         [HideInInspector, SerializeField, Tooltip("The type of block this is. The block type dictates what is generated within the block.")]
         public BlockType BlockType;
-
-        [SerializeField, Tooltip("The number of excess faction members that need to be present for dominance. This is used to calculate a factions influence on the block. If a faction has a majority of this many on a block then it is considered to have dominance.")]
-        int m_FactionMembersNeededForControl = 5;
+        [SerializeField, Tooltip("How many faction members this block can support. This is the contribution to the total number of faction members possible, it is not a limit on the number of members in this block.")]
+        int m_MaxFactionMembersSupported = 10;
 
         [Header("UX")]
         [SerializeField, Tooltip("The mesh that will show the faction control.")]
@@ -47,10 +46,23 @@ namespace WizardsCode.Versus.Controller
         public delegate void OnBlockUpdatedDelegate(BlockController block, VersuseEvent versusEvent);
         public OnBlockUpdatedDelegate OnBlockUpdated;
 
+        public delegate void OnBlockDominanceChangedDelegate(BlockController block, Faction previousDominantFaction);
+        public OnBlockDominanceChangedDelegate OnBlockDominanceChanged;
+
         private float timeOfNextFactionMapUpdate = 0;
         private Faction previousFaction;
 
         public CityController CityController { get; private set; }
+        /// <summary>
+        /// Returns the number of faction members that can be supported by this block. This is the
+        /// number of faction members added to the maximum number possible in the faction when this
+        /// block is dominated by that faction.
+        /// faction.
+        /// </summary>
+        public int FactionMembersSupported
+        {
+            get { return m_MaxFactionMembersSupported; }
+        }
         /// <summary>
         /// Returns the number of faction members needed to ensure dominance int his block.
         /// To have dominance the faction must have this many more members present than any other
@@ -58,11 +70,12 @@ namespace WizardsCode.Versus.Controller
         /// </summary>
         public int FactionMembersForDominance
         {
-            get { return m_FactionMembersNeededForControl; }
+            get { return m_MaxFactionMembersSupported / 2; }
         }
         /// <summary>
         /// Get a list of all the Dats that currently consider this block their home.
         /// </summary>
+        // TODO We should not be hard coding the management of animals, but rather managing them through their faction, e.g. GetInhabitants(Faction faction)
         public List<AnimalController> Cats
         {
             get { return m_CatsPresent; }
@@ -70,6 +83,7 @@ namespace WizardsCode.Versus.Controller
         /// <summary>
         /// Get a list of all the Dogs that currently consider this block their home.
         /// </summary>
+        // TODO We should not be hard coding the management of animals, but rather managing them through their faction, e.g. GetInhabitants(Faction faction)
         public List<AnimalController> Dogs
         {
             get { return m_DogsPresent; }
@@ -77,7 +91,7 @@ namespace WizardsCode.Versus.Controller
 
         PlayerCharacter player = null;
 
-        public Faction ControllingFaction
+        public Faction DominantFaction
         {
             get
             {
@@ -97,10 +111,17 @@ namespace WizardsCode.Versus.Controller
 
         private void Start()
         {
+            previousFaction = Faction.Neutral;
             m_FactionMesh = m_FactionMap.GetComponent<MeshFilter>().mesh;
             CityController = FindObjectOfType<CityController>();
         }
 
+        /// <summary>
+        /// Set the current priority rating for a specific faction. Priorities are set by the player or AI director
+        /// and influence the behaviour of AI agents in the game.
+        /// </summary>
+        /// <param name="faction"></param>
+        /// <param name="priority"></param>
         internal void SetPriority(Faction faction, Priority priority)
         {
             if (faction == Faction.Cat)
@@ -112,6 +133,12 @@ namespace WizardsCode.Versus.Controller
             }
         }
 
+        /// <summary>
+        /// Get the current priority rating for a specific faction. Priorities are set by the player or AI director
+        /// and influence the behaviour of AI agents in the game.
+        /// </summary>
+        /// <param name="faction">The faction we want to get the priority for.</param>
+        /// <returns></returns>
         internal Priority GetPriority(Faction faction)
         {
             if (faction == Faction.Cat)
@@ -284,28 +311,28 @@ namespace WizardsCode.Versus.Controller
 
             m_FactionMesh.colors32 = colors;
 
-            if (ControllingFaction != previousFaction)
+            if (DominantFaction != previousFaction)
             {
-                switch (ControllingFaction)
+                switch (DominantFaction)
                 {
                     case Faction.Cat:
-                        OnBlockUpdated(this, new BlockUpdateEvent($"The cats have taken {ToString()}.", Importance.High));
+                        OnBlockDominanceChanged(this, previousFaction);
                         break;
                     case Faction.Dog:
-                        OnBlockUpdated(this, new BlockUpdateEvent($"The dogs have taken {ToString()}.", Importance.High));
+                        OnBlockDominanceChanged(this, previousFaction);
                         break;
                     case Faction.Neutral:
                         if (previousFaction == Faction.Cat)
                         {
-                            OnBlockUpdated(this, new BlockUpdateEvent($"The dogs have weakened the cats hold on {ToString()}, it is now a neutral zone: (Normalized Influence: {NormalizedFactionInfluence}).", Importance.High));
+                            OnBlockDominanceChanged(this, previousFaction);
                         }
                         else
                         {
-                            OnBlockUpdated(this, new BlockUpdateEvent($"The cats have weakened the dogs hold on {ToString()}, it is now a neutral zone (Normalized Influence: {NormalizedFactionInfluence}).", Importance.High));
+                            OnBlockDominanceChanged(this, previousFaction);
                         }
                         break;
                 }
-                previousFaction = ControllingFaction;
+                previousFaction = DominantFaction;
             }
         }
 
@@ -324,12 +351,12 @@ namespace WizardsCode.Versus.Controller
                     m_CurrentInfluence = 0.5f;
                 } else if (m_DogsPresent.Count > m_CatsPresent.Count)
                 {
-                    float influence = (float)(m_DogsPresent.Count - m_CatsPresent.Count) / m_FactionMembersNeededForControl;
+                    float influence = (float)(m_DogsPresent.Count - m_CatsPresent.Count) / FactionMembersForDominance;
                     m_CurrentInfluence = Mathf.Clamp01(0.5f + (influence / 2));
                 }
                 else
                 {
-                    float influence = (float)(m_CatsPresent.Count - m_DogsPresent.Count) / m_FactionMembersNeededForControl;
+                    float influence = (float)(m_CatsPresent.Count - m_DogsPresent.Count) / FactionMembersForDominance;
                     m_CurrentInfluence = Mathf.Clamp01(0.5f - (influence / 2));
                 }
 

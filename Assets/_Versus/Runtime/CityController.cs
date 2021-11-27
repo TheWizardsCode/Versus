@@ -38,8 +38,6 @@ namespace WizardsCode.Versus.Controllers
         BlockController[] m_InnerCityBlockPrefabs;
 
         [Header("Factions")]
-        [SerializeField, Tooltip("The maximum size of each faction in terms of active animals within the faction. Note it is possible for a faction to go above this population, however, members will have a higher tendency to flee upon damage if it is overpopulated which will result in the overall population trending downwards again.")]
-        int m_MaxFactionSize = 1000;
         [SerializeField, Tooltip("Cat prefab, used to instantiate cats into the world.")]
         AnimalController m_CatPrefab;
         [SerializeField, Tooltip("Dog prefab, used to instantiate dogs into the world.")]
@@ -61,6 +59,7 @@ namespace WizardsCode.Versus.Controllers
         int nextCatID = 0;
         int nextDogID = 0;
         int[] factionPopulation;
+        int[] maxFactionSize;
 
         public int Width {
             get { return m_CityWidth; }
@@ -75,14 +74,14 @@ namespace WizardsCode.Versus.Controllers
         {
             eventLogger = new EventLogger(m_ConsoleLoggerMinImportance);
             factionPopulation = new int[Enum.GetNames(typeof(Faction)).Length];
+            maxFactionSize = new int[Enum.GetNames(typeof(Faction)).Length];
 
             GenerateCity();
         }
 
         internal int MaxFactionSize(Faction faction)
         {
-            // Currently we only allow one max faction size, in future iterations we may have individual maximums for different factions.
-            return m_MaxFactionSize;
+            return maxFactionSize[(int)faction];
         }
 
         internal int GetPopulation(Faction faction)
@@ -158,7 +157,11 @@ namespace WizardsCode.Versus.Controllers
 
                     if (block == null) continue;
 
+                    maxFactionSize[(int)block.DominantFaction] += block.FactionMembersSupported;
+
                     block.OnBlockUpdated += eventLogger.OnEventReceived;
+                    block.OnBlockDominanceChanged += eventLogger.OnBlockDominanceChanged;
+                    block.OnBlockDominanceChanged += OnBlockOwnershipChanged;
                     block.Coordinates = new Vector2Int(x, y);
                     block.BlockType = blockType;
                     block.transform.parent = m_CityBlockRoot;
@@ -181,6 +184,12 @@ namespace WizardsCode.Versus.Controllers
                     cityBlocks[x, y] = block;
                 }
             }
+        }
+
+        private void OnBlockOwnershipChanged(BlockController block, Faction previousDominantFaction)
+        {
+            maxFactionSize[(int)previousDominantFaction] -= block.FactionMembersSupported;
+            maxFactionSize[(int)block.DominantFaction] += block.FactionMembersSupported;
         }
 
         internal AnimalController SpawnCat(BlockController block)
