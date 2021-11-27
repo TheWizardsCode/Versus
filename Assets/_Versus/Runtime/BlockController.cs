@@ -136,19 +136,33 @@ namespace WizardsCode.Versus.Controller
         private void OnTriggerEnter(Collider other)
         {
             AnimalController animal = other.GetComponentInParent<AnimalController>();
-            if (animal && animal.currentState != State.Attack && animal.HomeBlock != this)
+            if (animal)
             {
-                if (animal.currentState == State.Expand && animal.ExpandToBlock != this)
+                if (animal.HomeBlock == this)
                 {
+                    if (animal.m_Faction == Faction.Dog)
+                    {
+                        m_DogsPresent.Add(animal);
+                    } else
+                    {
+                        m_CatsPresent.Add(animal);
+                    }
                     return;
                 }
-
-                if (animal.HomeBlock != null)
+                else if (animal.currentState != State.Attack && animal.HomeBlock != this)
                 {
-                    animal.HomeBlock.RemoveAnimal(animal);
+                    if (animal.currentState == State.Expand && animal.ExpandToBlock != this)
+                    {
+                        return;
+                    }
+
+                    if (animal.HomeBlock != null)
+                    {
+                        animal.HomeBlock.RemoveAnimal(animal);
+                    }
+                    AddAnimal(animal);
+                    return;
                 }
-                AddAnimal(animal);
-                return;
             }
 
             PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
@@ -161,6 +175,20 @@ namespace WizardsCode.Versus.Controller
 
         private void OnTriggerExit(Collider other)
         {
+            AnimalController animal = other.GetComponentInParent<AnimalController>();
+            if (animal && animal.HomeBlock == this)
+            {
+                if (animal.m_Faction == Faction.Dog)
+                {
+                    m_DogsPresent.Remove(animal);
+                }
+                else
+                {
+                    m_CatsPresent.Remove(animal);
+                }
+                return;
+            }
+
             PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
             if (character)
             {
