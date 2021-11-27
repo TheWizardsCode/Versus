@@ -172,6 +172,7 @@ namespace WizardsCode.Versus.Controller
         {
             animal.transform.SetParent(transform);
             animal.HomeBlock = this;
+            animal.OnDeath += OnDeath;
 
             switch (animal.m_Faction) {
                 case AnimalController.Faction.Cat:
@@ -185,8 +186,15 @@ namespace WizardsCode.Versus.Controller
             OnBlockUpdated(this, new BlockUpdateEvent($"The {animal.m_Faction} called {animal} moved into {ToString()}."));
         }
 
+        private void OnDeath(AnimalController animal)
+        {
+            RemoveAnimal(animal);
+        }
+
         internal void RemoveAnimal(AnimalController animal)
         {
+            animal.OnDeath -= OnDeath;
+
             switch (animal.m_Faction)
             {
                 case AnimalController.Faction.Cat:

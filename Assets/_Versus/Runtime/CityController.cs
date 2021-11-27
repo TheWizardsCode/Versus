@@ -5,6 +5,7 @@ using System;
 using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 using WizardsCode.Versus.Controller;
+using static WizardsCode.Versus.Controller.AnimalController;
 
 namespace WizardsCode.Versus.Controllers
 
@@ -37,6 +38,8 @@ namespace WizardsCode.Versus.Controllers
         BlockController[] m_InnerCityBlockPrefabs;
 
         [Header("Factions")]
+        [SerializeField, Tooltip("The maximum size of each faction in terms of active animals within the faction. Note it is possible for a faction to go above this population, however, members will have a higher tendency to flee upon damage if it is overpopulated which will result in the overall population trending downwards again.")]
+        int m_MaxFactionSize = 1000;
         [SerializeField, Tooltip("Cat prefab, used to instantiate cats into the world.")]
         AnimalController m_CatPrefab;
         [SerializeField, Tooltip("Dog prefab, used to instantiate dogs into the world.")]
@@ -55,6 +58,9 @@ namespace WizardsCode.Versus.Controllers
 
         BlockController[,] cityBlocks;
         private EventLogger eventLogger;
+        int nextCatID = 0;
+        int nextDogID = 0;
+        int[] factionPopulation;
 
         public int Width {
             get { return m_CityWidth; }
@@ -68,8 +74,20 @@ namespace WizardsCode.Versus.Controllers
         private void Start()
         {
             eventLogger = new EventLogger(m_ConsoleLoggerMinImportance);
+            factionPopulation = new int[Enum.GetNames(typeof(Faction)).Length];
 
             GenerateCity();
+        }
+
+        internal int MaxFactionSize(Faction faction)
+        {
+            // Currently we only allow one max faction size, in future iterations we may have individual maximums for different factions.
+            return m_MaxFactionSize;
+        }
+
+        internal int GetPopulation(Faction faction)
+        {
+            return factionPopulation[(int)faction];
         }
 
         private void GenerateCity()
@@ -85,8 +103,6 @@ namespace WizardsCode.Versus.Controllers
             float distanceFromCenter;
             Quaternion rotation;
             int blockIdx = 0;
-            int catIdx = 0;
-            int dogIdx = 0;
             for (int y = 0; y < m_CityWidth; y++)
             {
                 for (int x = 0; x < m_CityDepth; x++)
@@ -153,28 +169,49 @@ namespace WizardsCode.Versus.Controllers
                     int numOfCats = Random.Range(0, Mathf.RoundToInt(10 * catWeight));
                     for (int i = 0; i < numOfCats; i++)
                     {
-                        animal = Instantiate<AnimalController>(m_CatPrefab);
-                        animal.name = $"Cat {catIdx}";
-                        catIdx++;
-                        block.AddAnimal(animal);
-                        animal.OnAnimalAction += eventLogger.OnEventReceived;
-                        animal.transform.position = block.GetRandomPoint();
+                        animal = SpawnCat(block);
                     }
 
                     int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
                     for (int i = 0; i < numOfDogs; i++)
                     {
-                        animal = Instantiate<AnimalController>(m_DogPrefab);
-                        animal.name = $"Dog {dogIdx}";
-                        dogIdx++;
-                        block.AddAnimal(animal);
-                        animal.transform.position = block.GetRandomPoint();
-                        animal.OnAnimalAction += eventLogger.OnEventReceived;
+                        animal = SpawnDog(block);
                     }
 
                     cityBlocks[x, y] = block;
                 }
             }
+        }
+
+        internal AnimalController SpawnCat(BlockController block)
+        {
+            AnimalController animal = Instantiate<AnimalController>(m_CatPrefab);
+            animal.name = $"Cat {nextCatID}";
+            nextCatID++;
+            block.AddAnimal(animal);
+            animal.OnAnimalAction += eventLogger.OnEventReceived;
+            animal.transform.position = block.GetRandomPoint();
+            animal.OnDeath += OnDeath;
+            factionPopulation[(int)Faction.Cat]++;
+            return animal;
+        }
+
+        internal AnimalController SpawnDog(BlockController block)
+        {
+            AnimalController animal = Instantiate<AnimalController>(m_DogPrefab);
+            animal.name = $"Dog {nextDogID}";
+            nextDogID++;
+            block.AddAnimal(animal);
+            animal.transform.position = block.GetRandomPoint();
+            animal.OnAnimalAction += eventLogger.OnEventReceived;
+            animal.OnDeath += OnDeath;
+            factionPopulation[(int)Faction.Dog]++;
+            return animal;
+        }
+
+        private void OnDeath(AnimalController animal)
+        {
+            factionPopulation[(int)animal.m_Faction]--;
         }
 
         internal BlockController GetBlock(int x, int y)

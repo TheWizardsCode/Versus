@@ -39,8 +39,8 @@ namespace WizardsCode.Versus.AI
 
         private void OnBlockUpdate(BlockController block, VersuseEvent versusEvent)
         {
-            int friends = 0;
-            int enemies = 0; 
+            int friends;
+            int enemies; 
             if (m_Faction == Faction.Dog)
             {
                 friends = block.Dogs.Count;
@@ -60,7 +60,14 @@ namespace WizardsCode.Versus.AI
             // If we have dominance and there are no enemies breed
             if (friends >= block.FactionMembersForDominance && enemies == 0)
             {
-                block.SetPriority(m_Faction, Priority.Breed);
+
+                if (city.GetPopulation(m_Faction) < city.MaxFactionSize(m_Faction))
+                {
+                    block.SetPriority(m_Faction, Priority.Breed);
+                } else
+                {
+                    block.SetPriority(m_Faction, Priority.Medium);
+                }
                 return;
             }
             
