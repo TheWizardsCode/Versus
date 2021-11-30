@@ -149,14 +149,14 @@ namespace WizardsCode.Versus.Controller
             yield return null;
 
             while (true) {
-            if (!isAlive)
-            {
-                SetHealth(1, false, null);
-                isAlive = true;
-                currentState = State.Flee;
-                moveTargetPosition = GetFriendlyPositionOrDie();
-                OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
-            }
+                if (!isAlive)
+                {
+                    SetHealth(1, false, null);
+                    isAlive = true;
+                    currentState = State.Flee;
+                    moveTargetPosition = GetFriendlyPositionOrDie();
+                    OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
+                }
 
                 switch (currentState)
                 {
@@ -197,6 +197,8 @@ namespace WizardsCode.Versus.Controller
                         UpdateBreedState();
                         break;
                 }
+
+                yield return new WaitForSeconds(aiUpdateDelay);
             }
         }
 
