@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Versus.Controller;
+using System;
 
 namespace WizardsCode.Versus
 {
@@ -29,6 +30,14 @@ namespace WizardsCode.Versus
             if ((int)versusEvent.Importance >= (int)m_MinImportance)
             {
                 Debug.Log($"{versusEvent.GetType().Name} : {versusEvent.Description}");
+            }
+        }
+
+        internal void OnBlockDominanceChanged(BlockController block, AnimalController.Faction previousDominantFaction)
+        {
+            if ((int)Importance.High >= (int)m_MinImportance)
+            {
+                Debug.Log($"Dominance Change: {block} has just been dominated by {block.DominantFaction}. Previously it was dominated by {previousDominantFaction}.");
             }
         }
     }
