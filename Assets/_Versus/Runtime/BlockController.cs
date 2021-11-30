@@ -375,17 +375,6 @@ namespace WizardsCode.Versus.Controller
             }
         }
 
-        internal List<AnimalController> GetEnemiesOf(Faction m_Faction)
-        {
-            if (m_Faction == Faction.Cat)
-            {
-                return m_DogsPresent;
-            } else
-            {
-                return m_CatsPresent;
-            }
-        }
-
         internal List<AnimalController> GetFriendsOf(Faction m_Faction)
         {
             if (m_Faction == Faction.Dog)
