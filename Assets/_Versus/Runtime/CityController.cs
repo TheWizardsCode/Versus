@@ -84,10 +84,7 @@ namespace WizardsCode.Versus.Controllers
             Vector3 position;
             float distanceFromCenter;
             Quaternion rotation;
-            int suburbIdx = 0;
-            int cityIdx = 0;
-            int innerCityIdx = 0;
-            int downtownIdx = 0;
+            int blockIdx = 0;
             int catIdx = 0;
             int dogIdx = 0;
             for (int y = 0; y < m_CityWidth; y++)
@@ -119,23 +116,23 @@ namespace WizardsCode.Versus.Controllers
                     {
                         case BlockType.Suburban:
                             block = Instantiate(m_SuburbanBlockPrefabs[Random.Range(0, m_SuburbanBlockPrefabs.Length)], position, rotation);
-                            block.name = "Suburb " + suburbIdx;
-                            suburbIdx++;
+                            block.name = "Suburb " + blockIdx;
+                            blockIdx++;
                             break;
                         case BlockType.OuterCity:
                             block = Instantiate(m_OuterCityBlockPrefabs[Random.Range(0, m_OuterCityBlockPrefabs.Length)], position, rotation);
-                            block.name = "City Block " + cityIdx;
-                            cityIdx++;
+                            block.name = "City Block " + blockIdx;
+                            blockIdx++;
                             break;
                         case BlockType.City:
                             block = Instantiate(m_CityBlockPrefabs[Random.Range(0, m_CityBlockPrefabs.Length)], position, rotation);
-                            block.name = "Inner City Block " + innerCityIdx;
-                            innerCityIdx++;
+                            block.name = "Inner City Block " + blockIdx;
+                            blockIdx++;
                             break;
                         case BlockType.InnerCity:
                             block = Instantiate(m_InnerCityBlockPrefabs[Random.Range(0, m_InnerCityBlockPrefabs.Length)], position, rotation);
-                            block.name = "Downtown Block " + downtownIdx;
-                            downtownIdx++;
+                            block.name = "Downtown Block " + blockIdx;
+                            blockIdx++;
                             break;
                         default:
                             Debug.LogError("Unknown block type: " + blockType);

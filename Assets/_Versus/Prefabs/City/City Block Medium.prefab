@@ -387,9 +387,10 @@ MonoBehaviour:
   Coordinates: {x: 0, y: 0}
   m_Size: {x: 100, y: 100}
   BlockType: 0
+  m_FactionMembersNeededForControl: 5
   m_FactionMap: {fileID: 812714411087915319}
   m_FactionMapUpdateFrequency: 1
-  m_FactionMembersNeededForControl: 5
+  m_DebugInfo: Available in Play Mode only.
 --- !u!65 &960397562732018631
 BoxCollider:
   m_ObjectHideFlags: 0

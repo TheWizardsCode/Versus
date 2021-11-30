@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using WizardsCode.Versus.Controller;
 
 namespace WizardsCode.Versus
 {
@@ -17,6 +18,14 @@ namespace WizardsCode.Versus
         }
 
         public void OnEventReceived(VersuseEvent versusEvent) {
+            if ((int)versusEvent.Importance >= (int)m_MinImportance)
+            {
+                Debug.Log($"{versusEvent.GetType().Name} : {versusEvent.Description}");
+            }
+        }
+
+        public void OnEventReceived(BlockController block, VersuseEvent versusEvent)
+        {
             if ((int)versusEvent.Importance >= (int)m_MinImportance)
             {
                 Debug.Log($"{versusEvent.GetType().Name} : {versusEvent.Description}");
