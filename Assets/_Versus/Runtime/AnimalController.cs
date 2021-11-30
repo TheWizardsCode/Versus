@@ -249,6 +249,33 @@ namespace WizardsCode.Versus.Controller
             }
         }
 
+        /// <summary>
+        /// If the animal is not already in an attack state, or in a Flee state, scan the area for enemies. If one is spotted within a reasonable range then make it a target and attack.
+        /// </summary>
+        void ScanForEnemies()
+        {
+            if (currentState == State.Attack || currentState == State.Flee) return;
+
+            List<AnimalController> enemies = blockController.GetEnemiesOf(m_Faction);
+            float sqrDistance = float.MaxValue;
+            AnimalController nearest = null;
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                float distance = Vector3.SqrMagnitude(enemies[i].transform.position - transform.position);
+                if (distance < sqrDistance)
+                {
+                    nearest = enemies[i];
+                    sqrDistance = distance;
+                }
+            }
+
+            if (sqrDistance < m_ChaseDistance / 2)
+            {
+                target = nearest.transform;
+                currentState = State.Attack;
+            }
+        }
+
         Vector3 GetNewWanderPosition()
         {
             return HomeBlock.GetRandomPoint();

@@ -312,6 +312,17 @@ namespace WizardsCode.Versus.Controller
             }
         }
 
+        internal List<AnimalController> GetEnemiesOf(Faction m_Faction)
+        {
+            if (m_Faction == Faction.Cat)
+            {
+                return m_DogsPresent;
+            } else
+            {
+                return m_CatsPresent;
+            }
+        }
+
         public override string ToString()
         {
             return $"{name} {Coordinates}.";
