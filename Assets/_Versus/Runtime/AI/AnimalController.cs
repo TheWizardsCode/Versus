@@ -3,6 +3,7 @@ using WizardsCode.Versus.Weapons;
 using NeoFPS;
 using System;
 using Random = UnityEngine.Random;
+using System.Collections;
 using System.Collections.Generic;
 using static WizardsCode.Versus.Controller.BlockController;
 
@@ -17,6 +18,10 @@ namespace WizardsCode.Versus.Controller
         public enum Faction { Cat, Dog, Neutral }
 
         [Space]
+
+        [Header("Animal AI")]
+        [SerializeField, Tooltip("How frequently the animal should make decisions. Not that the actual time between decisions will be +/- 10% of this value.")]
+        float m_DecisionFrequency = 0.25f;
 
         [Header("Attributes")]
         [SerializeField, Tooltip("If set to true then the rate of resource gathering will be randomly set upon creation of an object with this controller attached. If set to false then the rate can be set here.")]
@@ -56,18 +61,20 @@ namespace WizardsCode.Versus.Controller
         [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
         Mine m_RepellentMinePrefab;
 
+        public delegate void OnAnimalActionDelegate(VersuseEvent versusEvent);
+        public OnAnimalActionDelegate OnAnimalAction;
+
         internal State currentState = State.Idle;
         internal Transform attackTarget;
         private float sqrChaseDistance = 0;
         private float sqrAttackDistance = 0;
         private float timeOfNextAttack = 0;
-        private float timeOfNextEnemyScan = 0;
+        private float timeOfNextEnemyScan = 0; 
+        private float aiUpdateDelay;
+        private Coroutine aiCoroutine;
         private Vector3 moveTargetPosition;
         private float availableRepellent;
         private float timeToRevaluateState = 0;
-
-        public delegate void OnAnimalActionDelegate(VersuseEvent versusEvent);
-        public OnAnimalActionDelegate OnAnimalAction;
 
         public delegate void OnDeathDelegate(AnimalController animal);
         public OnDeathDelegate OnDeath;
@@ -82,6 +89,17 @@ namespace WizardsCode.Versus.Controller
         {
             get { return m_HomeBlock; }
             set { m_HomeBlock = value; }
+        }
+
+        private void OnEnable()
+        {
+            aiUpdateDelay = Random.Range(m_DecisionFrequency * 0.9f, m_DecisionFrequency * 1.1f);
+            aiCoroutine = StartCoroutine(ProcessAI());
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
         }
 
         bool CanPlaceRepellentTrigger
@@ -126,61 +144,61 @@ namespace WizardsCode.Versus.Controller
             base.OnHealthChanged(from, to, critical, source);
         }
 
-        private void Update()
+        private IEnumerator ProcessAI()
         {
-            if (!isAlive)
-            {
-                SetHealth(1, false, null);
-                isAlive = true;
-                currentState = State.Flee;
-                moveTargetPosition = GetFriendlyPositionOrDie();
-                OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
-            }
+            yield return null;
 
-            if (Time.timeSinceLevelLoad > timeOfNextEnemyScan)
-            {
-                ScanForEnemies();
-                timeOfNextEnemyScan = Time.timeSinceLevelLoad + m_EnemyScanFrequency * Random.Range(0.9f, 1.1f);
-            }
+            while (true) {
+                if (!isAlive)
+                {
+                    SetHealth(1, false, null);
+                    isAlive = true;
+                    currentState = State.Flee;
+                    moveTargetPosition = GetFriendlyPositionOrDie();
+                    OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
+                }
 
-            switch (currentState)
-            {
-                case State.Idle:
-                    UpdateIdleState();
-                    break;
-                case State.GatherRepellent:
-                    UpdateGatherRepellentState();
-                    break;
-                case State.PlaceRepellentMine:
-                    UpdatePlaceRepellentMineState();
-                    break;
-                case State.Flee:
-                    Move(2);
-                    if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
-                    {
-                        currentState = State.Hide;
-                    }
-                    break;
-                case State.Hide:
-                    if (health >= healthMax * 0.8f)
-                    {
-                        currentState = State.Idle;
-                    }
-                    break;
-                case State.Attack:
-                    UpdateAttackState();
-                    break;
-                case State.Expand:
-                    Move(1.5f);
-                    float distanceToTarget = Vector3.SqrMagnitude(moveTargetPosition - transform.position);
-                    if (distanceToTarget < sqrAttackDistance)
-                    {
-                        currentState = State.Idle;
-                    }
-                    break;
-                case State.Breed:
-                    UpdateBreedState();
-                    break;
+                switch (currentState)
+                {
+                    case State.Idle:
+                        UpdateIdleState();
+                        break;
+                    case State.GatherRepellent:
+                        UpdateGatherRepellentState();
+                        break;
+                    case State.PlaceRepellentMine:
+                        UpdatePlaceRepellentMineState();
+                        break;
+                    case State.Flee:
+                        Move(2);
+                        if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
+                        {
+                            currentState = State.Hide;
+                        }
+                        break;
+                    case State.Hide:
+                        if (health >= healthMax * 0.8f)
+                        {
+                            currentState = State.Idle;
+                        }
+                        break;
+                    case State.Attack:
+                        UpdateAttackState();
+                        break;
+                    case State.Expand:
+                        Move(1.5f);
+                        float distanceToTarget = Vector3.SqrMagnitude(moveTargetPosition - transform.position);
+                        if (distanceToTarget < sqrAttackDistance)
+                        {
+                            currentState = State.Idle;
+                        }
+                        break;
+                    case State.Breed:
+                        UpdateBreedState();
+                        break;
+                }
+
+                yield return new WaitForSeconds(aiUpdateDelay);
             }
         }
 
