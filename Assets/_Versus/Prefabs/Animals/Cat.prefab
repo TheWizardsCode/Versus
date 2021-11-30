@@ -671,6 +671,11 @@ MonoBehaviour:
   m_HomeBlock: {fileID: 0}
   m_Speed: 3
   m_RotationSpeed: 8
+<<<<<<< HEAD
+=======
+  m_BreedingChance: 0.02
+  m_BreedingDuration: 120
+>>>>>>> put a limit on the number of animals in a faction
   m_EnemyScanFrequency: 2
   m_AttackDistance: 0.75
   m_AttackFrequency: 1.2
@@ -692,4 +697,8 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
+<<<<<<< HEAD
   m_CollisionDetection: 0
+=======
+  m_CollisionDetection: 0
+>>>>>>> put a limit on the number of animals in a faction
