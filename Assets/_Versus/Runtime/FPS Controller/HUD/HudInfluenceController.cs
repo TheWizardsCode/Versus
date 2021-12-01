@@ -29,8 +29,14 @@ namespace WizardsCode.Versus.FPS
                 m_Block.OnBlockUpdated -= OnBlockUpdated;
             }
 
-            m_Block = newBlock;
-            m_Block.OnBlockUpdated += OnBlockUpdated;
+            if (newBlock)
+            {
+                m_Block = newBlock;
+                m_Block.OnBlockUpdated += OnBlockUpdated;
+            } else
+            {
+                m_Block = null;
+            }
             UpdateGUI();
         }
 
@@ -41,7 +47,13 @@ namespace WizardsCode.Versus.FPS
 
         private void UpdateGUI()
         {
-            m_BarRect.localScale = new Vector2(1 - m_Block.NormalizedFactionInfluence, 1f);
+            if (m_Block != null)
+            {
+                m_BarRect.localScale = new Vector2(1 - m_Block.NormalizedFactionInfluence, 1f);
+            } else
+            {
+                m_BarRect.localScale = new Vector2(0.5f, 1f);
+            }
         }
     }
 }

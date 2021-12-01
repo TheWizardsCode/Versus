@@ -75,6 +75,7 @@ namespace WizardsCode.Versus.Controller
         private Vector3 moveTargetPosition;
         private float availableRepellent;
         private float timeToRevaluateState = 0;
+        private float currentSpeedMultiplier = 1;
 
         public delegate void OnDeathDelegate(AnimalController animal);
         public OnDeathDelegate OnDeath;
@@ -144,6 +145,11 @@ namespace WizardsCode.Versus.Controller
             base.OnHealthChanged(from, to, critical, source);
         }
 
+        private void Update()
+        {
+            Move(currentSpeedMultiplier);
+        }
+
         private IEnumerator ProcessAI()
         {
             yield return null;
@@ -170,7 +176,7 @@ namespace WizardsCode.Versus.Controller
                         UpdatePlaceRepellentMineState();
                         break;
                     case State.Flee:
-                        Move(2);
+                        currentSpeedMultiplier = 2;
                         if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
                         {
                             currentState = State.Hide;
@@ -186,7 +192,7 @@ namespace WizardsCode.Versus.Controller
                         UpdateAttackState();
                         break;
                     case State.Expand:
-                        Move(1.5f);
+                        currentSpeedMultiplier = 1.5f;
                         float distanceToTarget = Vector3.SqrMagnitude(moveTargetPosition - transform.position);
                         if (distanceToTarget < sqrAttackDistance)
                         {
@@ -204,7 +210,7 @@ namespace WizardsCode.Versus.Controller
 
         private void UpdatePlaceRepellentMineState()
         {
-            Move();
+            currentSpeedMultiplier = 1;
             if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
             {
                 Mine go = Instantiate<Mine>(m_RepellentMinePrefab);
@@ -219,13 +225,13 @@ namespace WizardsCode.Versus.Controller
         {
             if (randomizeReppelentGatheringSpeed)
             {
+                currentSpeedMultiplier = 1;
                 availableRepellent += Time.deltaTime * Random.Range(0.01f, m_RepellentGatheringSpeed);
             }
             else
             {
                 availableRepellent += Time.deltaTime * m_RepellentGatheringSpeed;
             }
-            Move();
             if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
             {
                 currentState = State.Idle;
@@ -313,7 +319,7 @@ namespace WizardsCode.Versus.Controller
             else
             {
                 moveTargetPosition = attackTarget.position;
-                Move(2);
+                currentSpeedMultiplier = 2;
             }
         }
 

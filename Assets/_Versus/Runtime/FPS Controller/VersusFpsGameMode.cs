@@ -13,10 +13,12 @@ namespace WizardsCode.Versus
     public class VersusFpsGameMode : FpsGameMode
     {
         [Header("Neo FPS")]
+        [SerializeField, Tooltip("Should the game mode automatically spawn a player character immediately on start.")]
+        private bool m_SpawnOnStart = true;
         [SerializeField, NeoPrefabField(required = true), Tooltip("The player prefab to instantiate if none exists.")]
-        FpsSoloPlayerController m_PlayerPrefab = null;
+        private FpsSoloPlayerController m_PlayerPrefab = null;
         [SerializeField, NeoPrefabField(required = true), Tooltip("The character prefab to use.")]
-        PlayerCharacter m_CharacterPrefab = null;
+        private PlayerCharacter m_CharacterPrefab = null;
 
         [Space]
         [Header("Debug")]
@@ -59,24 +61,30 @@ namespace WizardsCode.Versus
             base.OnStart();
             cityController = FindObjectOfType<CityController>();
 
-            inGame = true;
-            Spawn();
+            if (m_SpawnOnStart) {
+                inGame = true;
+                Spawn(null);
+            }
         }
 
-        public void Spawn()
+        /// <summary>
+        /// Spawn the player into FPS mode and configure the FPS game as in progress.
+        /// <param name="block">The block the player is to spawn in. If this is null the block identified in the m_SpawnBlockCoordinates will be used.</param>
+        /// </summary>
+        public void Spawn(BlockController block)
         {
-            if (!inGame)
+            if (!inGame) inGame = true;
+
+            if (block == null)
             {
-                Debug.LogError("Attempting to spawn character while not in game");
-                return;
+                block = cityController.GetBlock(m_SpawnBlockCoordinates);
             }
 
             NeoSerializedScene scene = GetComponent<NeoSerializedGameObject>().serializedScene;
 
             var prototype = GetPlayerCharacterPrototype(Player);
-            BlockController block = cityController.GetBlock(m_SpawnBlockCoordinates);
             SpawnPoint spawnPoint = block.GetFpsSpawnPoint();
-            ICharacter character = spawnPoint.SpawnCharacter(prototype, Player, true, scene);
+            character = spawnPoint.SpawnCharacter(prototype, Player, true, scene);
             if (character != null)
             {
                 ((PlayerCharacter)character).CurrentBlock = block;
@@ -84,6 +92,18 @@ namespace WizardsCode.Versus
             else
             {
                 Debug.LogError("No valid spawn points found");
+            }
+        }
+
+        /// <summary>
+        /// Despawn the FPS player.
+        /// </summary>
+        public void Despawn()
+        {
+            inGame = false;
+            if (character != null)
+            {
+                Destroy(character.gameObject);
             }
         }
 
@@ -110,6 +130,7 @@ namespace WizardsCode.Versus
         #region PERSISTENCE
 
         private NeoSerializedGameObject[] m_PersistentObjects = new NeoSerializedGameObject[2];
+        private ICharacter character;
 
         protected override NeoSerializedGameObject[] GetPersistentObjects()
         {
