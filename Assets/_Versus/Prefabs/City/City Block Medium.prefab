@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 1643215264773720657}
   - component: {fileID: -916100419488886915}
   - component: {fileID: 960397562732018631}
+  - component: {fileID: 284931950687646700}
   m_Layer: 0
   m_Name: City Block Medium
   m_TagString: Untagged
@@ -389,6 +390,36 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 100, y: 2, z: 100}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &284931950687646700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1643215264773720658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: d342a500033d4904d8be0987dd5ad98e, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &1643215265721390360
 GameObject:
   m_ObjectHideFlags: 0

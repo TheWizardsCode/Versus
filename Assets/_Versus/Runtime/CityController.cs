@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 using WizardsCode.Versus.Controller;
 using static WizardsCode.Versus.Controller.AnimalController;
+using Unity.AI.Navigation;
 
 namespace WizardsCode.Versus.Controllers
 
@@ -165,6 +166,7 @@ namespace WizardsCode.Versus.Controllers
                     block.Coordinates = new Vector2Int(x, y);
                     block.BlockType = blockType;
                     block.transform.parent = m_CityBlockRoot;
+                    block.GetComponent<NavMeshSurface>().BuildNavMesh();
 
                     AnimalController animal;
                     float catWeight = (float)((m_CityWidth - x) + (m_CityDepth - y)) / (m_CityWidth + m_CityDepth);
