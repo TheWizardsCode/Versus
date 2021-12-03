@@ -3,6 +3,7 @@
     "m_ResolutionWidth": 1920,
     "m_ResolutionHeight": 1080,
     "m_Fullscreen": true,
+    "m_Quality": 0,
     "m_VSync": 0,
     "m_FrameRateCap": -1,
     "m_VerticalFOV": 50.625

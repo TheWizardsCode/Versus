@@ -336,6 +336,33 @@ MonoBehaviour:
   m_Damage: 20
   m_ChaseDistance: 100
   m_RepellentMinePrefab: {fileID: 4929077495427469466, guid: 3b888958cdd1cee419742f462c8440ef, type: 3}
+  currentExperience: 0
+  currentLevel: 1
+  maxLevel: 100
+  levelProgression:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!54 &6456674610444847761
 Rigidbody:
   m_ObjectHideFlags: 0

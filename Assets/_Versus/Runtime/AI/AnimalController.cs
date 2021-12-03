@@ -5,6 +5,7 @@ using System;
 using Random = UnityEngine.Random;
 using System.Collections;
 using System.Collections.Generic;
+using WizardsCode.Versus.AI;
 using static WizardsCode.Versus.Controller.BlockController;
 
 namespace WizardsCode.Versus.Controller
@@ -60,6 +61,8 @@ namespace WizardsCode.Versus.Controller
         float m_ChaseDistance = 100;
         [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
         Mine m_RepellentMinePrefab;
+
+        public LevelSystem m_LevelSystem = new LevelSystem();
 
         public delegate void OnAnimalActionDelegate(VersuseEvent versusEvent);
         public OnAnimalActionDelegate OnAnimalAction;
@@ -217,20 +220,24 @@ namespace WizardsCode.Versus.Controller
                 go.transform.position = transform.position;
                 availableRepellent -= go.RequiredRepellent;
                 currentState = State.GatherRepellent;
+                // TODO experience awarded should be configurable and/or a random range
+                m_LevelSystem.AddExperience(2);
                 OnAnimalAction(new AnimalActionEvent($"{ToString()} placed a repellent mine at {transform.position}.", Importance.Low));
             }
         }
 
         private void UpdateGatherRepellentState()
         {
+            var repellentGatheringSpeed = m_RepellentGatheringSpeed * (float)(m_LevelSystem.GetLevel() / m_LevelSystem.GetMaxLevel());
+            
             if (randomizeReppelentGatheringSpeed)
             {
                 currentSpeedMultiplier = 1;
-                availableRepellent += Time.deltaTime * Random.Range(0.01f, m_RepellentGatheringSpeed);
+                availableRepellent += Time.deltaTime * Random.Range(0.01f, repellentGatheringSpeed);
             }
             else
             {
-                availableRepellent += Time.deltaTime * m_RepellentGatheringSpeed;
+                availableRepellent += Time.deltaTime * repellentGatheringSpeed;
             }
             if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
             {
@@ -285,9 +292,12 @@ namespace WizardsCode.Versus.Controller
                 Debug.LogError($"Attempted to spawn an animal of an unkown faction ({m_Faction}).");
                 return;
             }
-
+            
             OnAnimalAction(new AnimalActionEvent($"{newAnimal} was born in {HomeBlock} and is being sent out to expand the factions control.", Importance.Medium));
             newAnimal.SetToExpandStateIfPossible(100);
+
+            // TODO experience awarded should be configurable and/or a random range
+            m_LevelSystem.AddExperience(1);
 
             currentState = State.Idle;
         }
