@@ -6,12 +6,14 @@ using Random = UnityEngine.Random;
 using System.Collections;
 using System.Collections.Generic;
 using static WizardsCode.Versus.Controller.BlockController;
+using UnityEngine.AI;
 
 namespace WizardsCode.Versus.Controller
 {
     /// <summary>
     /// The animal controller is placed on each of the AI animals in the game and is responsible for managing their behaviour.
     /// </summary>
+    [RequireComponent(typeof(NavMeshAgent))]
     public class AnimalController : RechargingHealthManager
     {
         public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide, Attack, Expand, Breed }
@@ -68,11 +70,11 @@ namespace WizardsCode.Versus.Controller
         internal Transform attackTarget;
         private float sqrChaseDistance = 0;
         private float sqrAttackDistance = 0;
+        private NavMeshAgent navAgent;
         private float timeOfNextAttack = 0;
         private float timeOfNextEnemyScan = 0; 
         private float aiUpdateDelay;
         private Coroutine aiCoroutine;
-        private Vector3 moveTargetPosition;
         private float availableRepellent;
         private float timeToRevaluateState = 0;
         private float currentSpeedMultiplier = 1;
@@ -90,6 +92,36 @@ namespace WizardsCode.Versus.Controller
         {
             get { return m_HomeBlock; }
             set { m_HomeBlock = value; }
+        }
+
+        internal Vector3 MoveTargetPosition
+        {
+            get { return navAgent.destination; }
+            set
+            {
+                navAgent.speed = m_Speed * currentSpeedMultiplier;
+                navAgent.SetDestination(value);
+            }
+        }
+
+        /// <summary>
+        /// Check if the animal is at the current desired destination.
+        /// </summary>
+        internal bool AtDestination
+        {
+            get {
+                if (!navAgent.pathPending)
+                {
+                    if (navAgent.remainingDistance <= navAgent.stoppingDistance)
+                    {
+                        if (!navAgent.hasPath || navAgent.velocity.sqrMagnitude == 0f)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
         }
 
         private void OnEnable()
@@ -116,6 +148,7 @@ namespace WizardsCode.Versus.Controller
             HomeBlock = GetComponentInParent<BlockController>();
             sqrChaseDistance = m_ChaseDistance * m_ChaseDistance;
             sqrAttackDistance = m_AttackDistance * m_AttackDistance;
+            navAgent = GetComponent<NavMeshAgent>();
         }
 
         protected override void OnHealthChanged(float from, float to, bool critical, IDamageSource source)
@@ -130,24 +163,19 @@ namespace WizardsCode.Versus.Controller
                     } else
                     {
                         currentState = State.Flee;
-                        moveTargetPosition = GetFriendlyPositionOrDie();
+                        MoveTargetPosition = GetFriendlyPositionOrDie();
                         OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by {from - to} units of repellent. They are abandoning their expansion orders and seeking refuge if they can find it."));
                     }
                 }
                 else
                 {
                     currentState = State.Flee;
-                    moveTargetPosition = GetNewWanderPositionWithinHomeBlock();
+                    MoveTargetPosition = GetNewWanderPositionWithinHomeBlock();
                     OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by {from - to} units of repellent. They are fleeing from the source but staying within {HomeBlock} block for now."));
                 }
             }
 
             base.OnHealthChanged(from, to, critical, source);
-        }
-
-        private void Update()
-        {
-            Move(currentSpeedMultiplier);
         }
 
         private IEnumerator ProcessAI()
@@ -160,7 +188,7 @@ namespace WizardsCode.Versus.Controller
                     SetHealth(1, false, null);
                     isAlive = true;
                     currentState = State.Flee;
-                    moveTargetPosition = GetFriendlyPositionOrDie();
+                    MoveTargetPosition = GetFriendlyPositionOrDie();
                     OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
                 }
 
@@ -177,12 +205,13 @@ namespace WizardsCode.Versus.Controller
                         break;
                     case State.Flee:
                         currentSpeedMultiplier = 2;
-                        if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
+                        if (AtDestination)
                         {
                             currentState = State.Hide;
                         }
                         break;
                     case State.Hide:
+                        currentSpeedMultiplier = 1;
                         if (health >= healthMax * 0.8f)
                         {
                             currentState = State.Idle;
@@ -193,13 +222,13 @@ namespace WizardsCode.Versus.Controller
                         break;
                     case State.Expand:
                         currentSpeedMultiplier = 1.5f;
-                        float distanceToTarget = Vector3.SqrMagnitude(moveTargetPosition - transform.position);
-                        if (distanceToTarget < sqrAttackDistance)
+                        if (AtDestination)
                         {
                             currentState = State.Idle;
                         }
                         break;
                     case State.Breed:
+                        currentSpeedMultiplier = 0.1f;
                         UpdateBreedState();
                         break;
                 }
@@ -211,7 +240,7 @@ namespace WizardsCode.Versus.Controller
         private void UpdatePlaceRepellentMineState()
         {
             currentSpeedMultiplier = 1;
-            if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
+            if (AtDestination)
             {
                 Mine go = Instantiate<Mine>(m_RepellentMinePrefab);
                 go.transform.position = transform.position;
@@ -223,6 +252,7 @@ namespace WizardsCode.Versus.Controller
 
         private void UpdateGatherRepellentState()
         {
+            currentSpeedMultiplier = 1;
             if (randomizeReppelentGatheringSpeed)
             {
                 currentSpeedMultiplier = 1;
@@ -232,7 +262,7 @@ namespace WizardsCode.Versus.Controller
             {
                 availableRepellent += Time.deltaTime * m_RepellentGatheringSpeed;
             }
-            if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
+            if (AtDestination)
             {
                 currentState = State.Idle;
             }
@@ -240,6 +270,8 @@ namespace WizardsCode.Versus.Controller
 
         private void UpdateIdleState()
         {
+            currentSpeedMultiplier = 1f;
+
             if (CanPlaceRepellentTrigger)
             {
                 currentState = State.PlaceRepellentMine;
@@ -259,7 +291,7 @@ namespace WizardsCode.Versus.Controller
                 else
                 {
                     currentState = State.GatherRepellent;
-                    moveTargetPosition = GetNewWanderPositionWithinHomeBlock();
+                    MoveTargetPosition = GetNewWanderPositionWithinHomeBlock();
                 }
             }
         }
@@ -294,6 +326,7 @@ namespace WizardsCode.Versus.Controller
 
         private void UpdateAttackState()
         {
+            currentSpeedMultiplier = 1.2f;
             if (!attackTarget)
             {
                 currentState = State.Idle;
@@ -318,7 +351,7 @@ namespace WizardsCode.Versus.Controller
             }
             else
             {
-                moveTargetPosition = attackTarget.position;
+                MoveTargetPosition = attackTarget.position;
                 currentSpeedMultiplier = 2;
             }
         }
@@ -333,13 +366,13 @@ namespace WizardsCode.Versus.Controller
             if (ExpandToBlock != null)
             {
                 OnAnimalAction(new AnimalActionEvent($"{ToString()} is leaving {HomeBlock} in an attempt to take {ExpandToBlock} for the {m_Faction}s.", Importance.Medium));
-                moveTargetPosition = ExpandToBlock.GetRandomPoint();
+                MoveTargetPosition = ExpandToBlock.GetRandomPoint();
                 currentState = State.Expand;
             }
             else
             {
                 currentState = State.GatherRepellent;
-                moveTargetPosition = GetNewWanderPositionWithinHomeBlock();
+                MoveTargetPosition = GetNewWanderPositionWithinHomeBlock();
             }
         }
 
@@ -379,21 +412,6 @@ namespace WizardsCode.Versus.Controller
         Vector3 GetNewWanderPositionWithinHomeBlock()
         {
             return HomeBlock.GetRandomPoint();
-        }
-
-        void Move(float speedMultiplier = 1)
-        {
-            Rotate();
-            float step = m_Speed * speedMultiplier * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, moveTargetPosition, step);
-        }
-
-        void Rotate()
-        {
-            Vector3 targetDirection = moveTargetPosition - transform.position;
-            float singleStep = m_RotationSpeed * Time.deltaTime;
-            Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-            transform.rotation = Quaternion.LookRotation(newDirection);
         }
 
         /// <summary>
@@ -525,7 +543,7 @@ namespace WizardsCode.Versus.Controller
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(moveTargetPosition, 0.5f);
+            Gizmos.DrawSphere(MoveTargetPosition, 0.5f);
         }
     }
 }

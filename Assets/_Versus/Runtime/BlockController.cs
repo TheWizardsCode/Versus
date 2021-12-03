@@ -7,6 +7,7 @@ using static WizardsCode.Versus.Controller.AnimalController;
 using System.Text;
 using NeoFPS;
 using WizardsCode.Versus.FPS;
+using UnityEngine.AI;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -266,11 +267,19 @@ namespace WizardsCode.Versus.Controller
         /// <summary>
         /// Gets a random point within this block that an animal might want to go to.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A random position on the navmesh. Up to 30 points will be sampled, in the unlikely event that none are suitable the transform position is returned.</returns>
         internal Vector3 GetRandomPoint()
         {
-            //TODO: more intelligent spawning location, currently animals can spawn on top of one another, inside buildings and more.
-            return transform.position +  new Vector3(Random.Range(-m_Size.x / 2, m_Size.x / 2), 0, Random.Range(-m_Size.y / 2, m_Size.y / 2));
+            for (int i = 0; i < 30; i++)
+            {
+                Vector3 randomPos = transform.position + new Vector3(Random.Range(-m_Size.x / 2, m_Size.x / 2), 0, Random.Range(-m_Size.y / 2, m_Size.y / 2));
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(randomPos, out hit, 1, NavMesh.AllAreas))
+                {
+                    return hit.position;
+                }
+            }
+            return transform.position;
         }
 
         private void Update()

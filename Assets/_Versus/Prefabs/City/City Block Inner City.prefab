@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 114660808167493287}
   - component: {fileID: 8990353923715784494}
   - component: {fileID: 534089678538661703}
+  - component: {fileID: 3904987412730220844}
   m_Layer: 0
   m_Name: Faction Map Plane
   m_TagString: Untagged
@@ -181,6 +182,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3904987412730220844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3652796277633492377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &3695782348382375190
 GameObject:
   m_ObjectHideFlags: 0
