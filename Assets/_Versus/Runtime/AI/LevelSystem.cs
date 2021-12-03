@@ -7,17 +7,18 @@ namespace WizardsCode.Versus.AI
         public event EventHandler OnExperienceChanged;
         public event EventHandler OnLevelChanged;
 
-        private long m_CurrentExperience;
-        private int m_CurrentLevel;
-
-        // TODO maybe this should be set somewhere else or configurable
-        private const int MaxLevel = 100;
-
-        public int GetMaxLevel()
+        public int MaxLevel
         {
-            return MaxLevel;
+            get {
+                // TODO maybe this should be set somewhere else or configurable
+                return 100; 
+            }
         }
-        
+
+        public int Level { get; internal set; }
+
+        public long Experience { get; internal set; }
+
         /// <summary>
         /// Calculate the experience needed for the next level
         /// </summary>
@@ -35,31 +36,21 @@ namespace WizardsCode.Versus.AI
         
         public void AddExperience(long amount)
         {
-            m_CurrentExperience += amount;
+            Experience += amount;
             if (OnExperienceChanged != null)
             {
                 OnExperienceChanged(this, EventArgs.Empty);
             }
-            var experienceNeeded = GetExperienceNeeded(m_CurrentLevel);
-            if (m_CurrentExperience > experienceNeeded)
+            var experienceNeeded = GetExperienceNeeded(Level);
+            if (Experience > experienceNeeded)
             {
-                m_CurrentLevel++;
+                Level++;
                 // TODO add some cool message that the animal reached a new level
                 if (OnLevelChanged != null)
                 {
                     OnLevelChanged(this, EventArgs.Empty);
                 }
             }
-        }
-        
-        public int GetLevel()
-        {
-            return m_CurrentLevel;
-        }
-
-        public long GetExperience()
-        {
-            return m_CurrentExperience;
         }
     }
 }
