@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using WizardsCode.Versus.Controller;
 
 namespace WizardsCode.Versus
@@ -25,20 +27,55 @@ namespace WizardsCode.Versus
         [SerializeField, Tooltip("The FPS HUD that should be displayed whenever FPS mode is enabled.")]
         RectTransform m_FpsHUD;
 
+        [Header("Block Tooltip")]
+        [SerializeField, Tooltip("")]
+        private RectTransform m_BlockTooltip;
+        [SerializeField, Tooltip("")] 
+        private TextMeshProUGUI m_BlockContent;
+
         private void Start()
         {
+            // Hide the tooltip on startup
+            m_BlockTooltip.gameObject.SetActive(false);
             EnableTopDownMode();
         }
 
         private void Update()
         {
-            if (m_IsTopDownMode && Input.GetMouseButtonDown(0))
+            if (m_IsTopDownMode)
             {
                 Ray ray = m_TopDownCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
-                    EnableFpsMode(hit.collider.GetComponentInParent<BlockController>());
+                    var blockController = hit.collider.GetComponentInParent<BlockController>();
+                    if (blockController != null)
+                    {
+                        string blockDescription = string.Empty;
+                        blockDescription += $"Coordinates: {blockController.Coordinates}{Environment.NewLine}";
+                        blockDescription += $"Size: {blockController.m_Size}{Environment.NewLine}";
+                        blockDescription += $"Type: {blockController.BlockType}{Environment.NewLine}";
+                        blockDescription += $"Faction Members Supported: {blockController.FactionMembersSupported}{Environment.NewLine}";
+                        blockDescription += $"Dominant Faction: {blockController.DominantFaction}{Environment.NewLine}";
+                        blockDescription += $"Dogs: {blockController.Dogs.Count}{Environment.NewLine}";
+                        blockDescription += $"Cats: {blockController.Cats.Count}{Environment.NewLine}";
+                        blockDescription += "<color=\"green\">Left Click to enter FPS mode in this block</color>";
+                        m_BlockContent.text = blockDescription;
+                        // TODO need to position it so it doesn't go offscreen when hovering over blocks near the edge
+                        m_BlockTooltip.position = Input.mousePosition;
+                        m_BlockTooltip.gameObject.SetActive(true);
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            EnableFpsMode(blockController);
+                        }
+                    }
+                }
+                else
+                {
+                    if (m_BlockTooltip.gameObject.activeSelf)
+                    {
+                        m_BlockTooltip.gameObject.SetActive(false);
+                    }
                 }
             }
         }
