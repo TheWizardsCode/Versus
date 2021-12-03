@@ -27,8 +27,8 @@ namespace WizardsCode.Versus.Controller
         [Header("Attributes")]
         [SerializeField, Tooltip("If set to true then the rate of resource gathering will be randomly set upon creation of an object with this controller attached. If set to false then the rate can be set here.")]
         bool randomizeReppelentGatheringSpeed = true;
-        [SerializeField, Tooltip("The maximum rate at which this animal will collect repellent for making weaponry. Measured in repellent per second. If randomizeReppelentGatheringSpeed is true this value will be randomized between 0.01 and this value. If set to false it will be this amount precisely.")]
-        float m_RepellentGatheringSpeed;
+        [SerializeField, Tooltip("The maximum rate at which this animal will collect repellent for making weaponry. Measured in repellent per second. If randomizeReppelentGatheringSpeed is true the amount collected will randomized between 0.01 and this value on start. Note that this max level will only be reached when the animal reaches its maximum level. If set to false it will be this amount precisely.")]
+        float m_MaxRepellentGatheringSpeed = 6f;
 
         [Header("Faction")]
         [SerializeField, Tooltip("The faction this animal belongs to and fights for.")]
@@ -82,6 +82,7 @@ namespace WizardsCode.Versus.Controller
 
         public delegate void OnDeathDelegate(AnimalController animal);
         public OnDeathDelegate OnDeath;
+        private float m_CurrentRepellentGatheringSpeed;
 
         /// <summary>
         /// The expand to block indicates the block that this Animal is planning on making its home.
@@ -99,11 +100,19 @@ namespace WizardsCode.Versus.Controller
         {
             aiUpdateDelay = Random.Range(m_DecisionFrequency * 0.9f, m_DecisionFrequency * 1.1f);
             aiCoroutine = StartCoroutine(ProcessAI());
+            m_LevelSystem.OnLevelChanged += OnLevelChanged;
+            m_CurrentRepellentGatheringSpeed = m_MaxRepellentGatheringSpeed;
         }
 
         private void OnDisable()
         {
+            m_LevelSystem.OnLevelChanged += OnLevelChanged;
             StopAllCoroutines();
+        }
+
+        private void OnLevelChanged(object sender, EventArgs e)
+        {
+            m_CurrentRepellentGatheringSpeed = m_MaxRepellentGatheringSpeed * (float)(m_LevelSystem.Level / m_LevelSystem.MaxLevel);
         }
 
         bool CanPlaceRepellentTrigger
@@ -227,17 +236,15 @@ namespace WizardsCode.Versus.Controller
         }
 
         private void UpdateGatherRepellentState()
-        {
-            var repellentGatheringSpeed = m_RepellentGatheringSpeed * (float)(m_LevelSystem.GetLevel() / m_LevelSystem.GetMaxLevel());
-            
+        {   
             if (randomizeReppelentGatheringSpeed)
             {
                 currentSpeedMultiplier = 1;
-                availableRepellent += Time.deltaTime * Random.Range(0.01f, repellentGatheringSpeed);
+                availableRepellent += Time.deltaTime * Random.Range(0.01f, m_CurrentRepellentGatheringSpeed);
             }
             else
             {
-                availableRepellent += Time.deltaTime * repellentGatheringSpeed;
+                availableRepellent += Time.deltaTime * m_CurrentRepellentGatheringSpeed;
             }
             if (Mathf.Approximately(Vector3.SqrMagnitude(moveTargetPosition - transform.position), 0))
             {
