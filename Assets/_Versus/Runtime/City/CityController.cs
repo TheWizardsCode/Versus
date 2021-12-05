@@ -1,11 +1,12 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using System;
-using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 using WizardsCode.Versus.Controller;
 using static WizardsCode.Versus.Controller.AnimalController;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace WizardsCode.Versus.Controllers
 
@@ -53,8 +54,11 @@ namespace WizardsCode.Versus.Controllers
         [Header("Debug")]
         [SerializeField, Tooltip("The minimum level of logging information to display in the console.")]
         Importance m_ConsoleLoggerMinImportance = Importance.Low;
+        [SerializeField, Tooltip("If set to true the city will be generated at runtime. If set to false use the `Generate City` context menu item.")]
+        bool m_GenerateAtRuntime = false;
 
         BlockController[,] cityBlocks;
+
         private EventLogger eventLogger;
         int nextCatID = 0;
         int nextDogID = 0;
@@ -76,7 +80,18 @@ namespace WizardsCode.Versus.Controllers
             factionPopulation = new int[Enum.GetNames(typeof(Faction)).Length];
             maxFactionSize = new int[Enum.GetNames(typeof(Faction)).Length];
 
-            GenerateCity();
+            if (m_GenerateAtRuntime)
+            {
+                GenerateCity();
+            }
+
+            cityBlocks = new BlockController[m_CityWidth, m_CityDepth];
+            for (int i = 0; i < m_CityBlockRoot.childCount; i++)
+            {
+                BlockController block = m_CityBlockRoot.GetChild(i).GetComponent<BlockController>();
+                cityBlocks[block.Coordinates.x, block.Coordinates.y] = block;
+                PopulateBlock(block);
+            }
         }
 
         internal int MaxFactionSize(Faction faction)
@@ -89,8 +104,13 @@ namespace WizardsCode.Versus.Controllers
             return factionPopulation[(int)faction];
         }
 
+        [ContextMenu("Generate City")]
         private void GenerateCity()
         {
+            if (cityBlocks != null) {
+                DestroyCity();
+            }
+
             cityBlocks = new BlockController[m_CityDepth, m_CityWidth];
             int blockSize = m_BlockSize + (2 * m_RoadWidth);
             Vector3 center = new Vector3(blockSize * m_CityDepth / 2, 0, (blockSize * m_CityWidth) / 2);
@@ -157,32 +177,49 @@ namespace WizardsCode.Versus.Controllers
 
                     if (block == null) continue;
 
-                    maxFactionSize[(int)block.DominantFaction] += block.FactionMembersSupported;
-
-                    block.OnBlockUpdated += eventLogger.OnEventReceived;
-                    block.OnBlockDominanceChanged += eventLogger.OnBlockDominanceChanged;
-                    block.OnBlockDominanceChanged += OnBlockOwnershipChanged;
                     block.Coordinates = new Vector2Int(x, y);
                     block.BlockType = blockType;
                     block.transform.parent = m_CityBlockRoot;
 
-                    AnimalController animal;
-                    float catWeight = (float)((m_CityWidth - x) + (m_CityDepth - y)) / (m_CityWidth + m_CityDepth);
-                    float dogWeight = 1 - catWeight;
-                    int numOfCats = Random.Range(0, Mathf.RoundToInt(10 * catWeight));
-                    for (int i = 0; i < numOfCats; i++)
-                    {
-                        animal = SpawnCat(block);
-                    }
-
-                    int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
-                    for (int i = 0; i < numOfDogs; i++)
-                    {
-                        animal = SpawnDog(block);
-                    }
-
                     cityBlocks[x, y] = block;
                 }
+            }
+
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(gameObject);
+#endif
+        }
+
+        [ContextMenu("Destroy City")]
+        private void DestroyCity()
+        {
+            for (int i = 0; i < m_CityBlockRoot.childCount; i++)
+            {
+                DestroyImmediate(m_CityBlockRoot.GetChild(i).gameObject);
+            }
+        }
+
+        private void PopulateBlock(BlockController block)
+        {
+            maxFactionSize[(int)block.DominantFaction] += block.FactionMembersSupported;
+
+            block.OnBlockUpdated += eventLogger.OnEventReceived;
+            block.OnBlockDominanceChanged += eventLogger.OnBlockDominanceChanged;
+            block.OnBlockDominanceChanged += OnBlockOwnershipChanged;
+
+            AnimalController animal;
+            float catWeight = (float)((m_CityWidth - block.Coordinates.x) + (m_CityDepth - block.Coordinates.y)) / (m_CityWidth + m_CityDepth);
+            float dogWeight = 1 - catWeight;
+            int numOfCats = Random.Range(0, Mathf.RoundToInt(10 * catWeight));
+            for (int i = 0; i < numOfCats; i++)
+            {
+                animal = SpawnCat(block);
+            }
+
+            int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
+            for (int i = 0; i < numOfDogs; i++)
+            {
+                animal = SpawnDog(block);
             }
         }
 
