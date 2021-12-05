@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using WizardsCode.Versus.Controller;
+using static WizardsCode.Versus.Controller.AnimalController;
+using static WizardsCode.Versus.Controller.BlockController;
 
 namespace WizardsCode.Versus
 {
@@ -28,9 +30,9 @@ namespace WizardsCode.Versus
         RectTransform m_FpsHUD;
 
         [Header("Block Tooltip")]
-        [SerializeField, Tooltip("")]
+        [SerializeField, Tooltip("The RectTransform used to show/hide the tooltip.")]
         private RectTransform m_BlockTooltip;
-        [SerializeField, Tooltip("")] 
+        [SerializeField, Tooltip("The text component within which the tooltip information for a block will be displayed.")] 
         private TextMeshProUGUI m_BlockContent;
 
         private void Start()
@@ -52,14 +54,23 @@ namespace WizardsCode.Versus
                     if (blockController != null)
                     {
                         string blockDescription = string.Empty;
-                        blockDescription += $"Coordinates: {blockController.Coordinates}{Environment.NewLine}";
-                        blockDescription += $"Size: {blockController.m_Size}{Environment.NewLine}";
+                        if (blockController.DominantFaction == Faction.Neutral) {
+                            blockDescription += $"<color=#00ff00ff>No</color> dominant faction.{Environment.NewLine}";
+                        }
+                        else if(blockController.DominantFaction == Faction.Dog)
+                        {
+                            blockDescription += $"<color=#00ffffff>Dogs</color> are the dominant faction.{Environment.NewLine}";
+                        }
+                        else if (blockController.DominantFaction == Faction.Cat)
+                        {
+                            blockDescription += $"<color=#ff00ffff>Cats</color> are the dominant faction.{Environment.NewLine}";
+                        }
+                        blockDescription += $"<color=#00ffffff>{blockController.Dogs.Count}/{blockController.FactionMembersSupported}</color> Dogs present with {blockController.GetPriority(Faction.Dog)} priority.{Environment.NewLine}";
+                        blockDescription += $"<color=#ff00ffff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present with {blockController.GetPriority(Faction.Cat)} priority.{Environment.NewLine}";
                         blockDescription += $"Type: {blockController.BlockType}{Environment.NewLine}";
-                        blockDescription += $"Faction Members Supported: {blockController.FactionMembersSupported}{Environment.NewLine}";
-                        blockDescription += $"Dominant Faction: {blockController.DominantFaction}{Environment.NewLine}";
-                        blockDescription += $"Dogs: {blockController.Dogs.Count}{Environment.NewLine}";
-                        blockDescription += $"Cats: {blockController.Cats.Count}{Environment.NewLine}";
-                        blockDescription += "<color=\"green\">Left Click to enter FPS mode in this block</color>";
+                        blockDescription += $"{Environment.NewLine}";
+                        blockDescription += $"<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block.</color></size>{Environment.NewLine}";
+                        blockDescription += "<size=20><color=#00ff00ff>Right Click to cycle block priority.</color></size>";
                         m_BlockContent.text = blockDescription;
                         // TODO need to position it so it doesn't go offscreen when hovering over blocks near the edge
                         m_BlockTooltip.position = Input.mousePosition;
@@ -67,6 +78,10 @@ namespace WizardsCode.Versus
                         if (Input.GetMouseButtonDown(0))
                         {
                             EnableFpsMode(blockController);
+                        }
+                        if (Input.GetMouseButtonDown(1))
+                        {
+                            TogglePriority(blockController);
                         }
                     }
                 }
@@ -78,6 +93,17 @@ namespace WizardsCode.Versus
                     }
                 }
             }
+        }
+
+        private void TogglePriority(BlockController blockController)
+        {
+            int pri = (int)blockController.GetPriority(Faction.Cat);
+            pri++;
+            if (pri > Enum.GetNames(typeof(Faction)).Length)
+            {
+                pri = 0;
+            }
+            blockController.SetPriority(Faction.Cat, (Priority)pri);
         }
 
         public void EnableFpsMode(BlockController block)
