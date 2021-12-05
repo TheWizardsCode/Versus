@@ -220,7 +220,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: AI Manager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7731783026719612930, guid: 68a3f5833d4317443bbc39bf6d45abdd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 68a3f5833d4317443bbc39bf6d45abdd, type: 3}
 --- !u!1 &132232510
 GameObject:
@@ -1215,7 +1216,7 @@ MonoBehaviour:
 
     Type: OuterCity
 
-    
+
 
     <size=20><color=#00ff00ff>Left
     Click to enter FPS mode in this block</color></size>'

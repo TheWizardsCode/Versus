@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using WizardsCode.Versus.Controller;
 using static WizardsCode.Versus.Controller.AnimalController;
+using static WizardsCode.Versus.Controller.BlockController;
 
 namespace WizardsCode.Versus
 {
@@ -68,7 +69,8 @@ namespace WizardsCode.Versus
                         blockDescription += $"<color=#ff00ffff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present with {blockController.GetPriority(Faction.Cat)} priority.{Environment.NewLine}";
                         blockDescription += $"Type: {blockController.BlockType}{Environment.NewLine}";
                         blockDescription += $"{Environment.NewLine}";
-                        blockDescription += "<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block</color></size>";
+                        blockDescription += $"<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block.</color></size>{Environment.NewLine}";
+                        blockDescription += "<size=20><color=#00ff00ff>Right Click to cycle block priority.</color></size>";
                         m_BlockContent.text = blockDescription;
                         // TODO need to position it so it doesn't go offscreen when hovering over blocks near the edge
                         m_BlockTooltip.position = Input.mousePosition;
@@ -76,6 +78,10 @@ namespace WizardsCode.Versus
                         if (Input.GetMouseButtonDown(0))
                         {
                             EnableFpsMode(blockController);
+                        }
+                        if (Input.GetMouseButtonDown(1))
+                        {
+                            TogglePriority(blockController);
                         }
                     }
                 }
@@ -87,6 +93,17 @@ namespace WizardsCode.Versus
                     }
                 }
             }
+        }
+
+        private void TogglePriority(BlockController blockController)
+        {
+            int pri = (int)blockController.GetPriority(Faction.Cat);
+            pri++;
+            if (pri > Enum.GetNames(typeof(Faction)).Length)
+            {
+                pri = 0;
+            }
+            blockController.SetPriority(Faction.Cat, (Priority)pri);
         }
 
         public void EnableFpsMode(BlockController block)
