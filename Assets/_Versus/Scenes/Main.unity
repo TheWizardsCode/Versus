@@ -636,7 +636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7294118}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1205,23 +1205,20 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Coordinates: (10, 10)
+  m_text: '<color=#00ffffff>Dogs</color> are the dominant faction.
 
-    Size: (100, 100)
+    <color=#00ffffff>10/10</color>
+    Dogs present with Medium priority.
 
-    Type: InnerCity
+    <color=#ff00ffff>4/10</color> Cats present
+    with Low priority.
 
-    Faction
-    Members Supported: 10
+    Type: OuterCity
 
-    Dominant Faction: Neutral
+    
 
-    Dogs: 5
-
-    Cats:
-    5
-
-    <color="green">Left Click to enter FPS mode in this block</color>'
+    <size=20><color=#00ff00ff>Left
+    Click to enter FPS mode in this block</color></size>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d77a7943873f8864eaffe0a7288765c2, type: 2}
   m_sharedMaterial: {fileID: 1859973195450039764, guid: d77a7943873f8864eaffe0a7288765c2, type: 2}
@@ -1248,15 +1245,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35
-  m_fontSizeBase: 35
+  m_fontSize: 33
+  m_fontSizeBase: 33
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
