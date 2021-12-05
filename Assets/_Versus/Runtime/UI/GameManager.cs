@@ -33,6 +33,8 @@ namespace WizardsCode.Versus
         private RectTransform m_BlockTooltip;
         [SerializeField, Tooltip("The text component within which the tooltip information for a block will be displayed.")] 
         private TextMeshProUGUI m_BlockContent;
+        
+        private const string statusMessage = "<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block</color></size>                              <size=20><color=#00ff00ff>Right Click to cycle block priority</color></size>";
 
         public delegate void OnGameModeChangedDelegate();
         public OnGameModeChangedDelegate OnGameModeChanged;
@@ -65,9 +67,11 @@ namespace WizardsCode.Versus
                     var blockController = hit.collider.GetComponentInParent<BlockController>();
                     if (blockController != null)
                     {
-                        string blockDescription = string.Empty;
-                        if (blockController.DominantFaction == Faction.Neutral) {
-                            blockDescription += $"<color=#00ff00ff>No</color> dominant faction.{Environment.NewLine}";
+                        var blockDescription = string.Empty;
+
+                        if (blockController.DominantFaction == Faction.Neutral) 
+                        {
+                            blockDescription += $"<color=#ff0000>No</color> dominant faction.{Environment.NewLine}";
                         }
                         else if(blockController.DominantFaction == Faction.Dog)
                         {
@@ -75,14 +79,33 @@ namespace WizardsCode.Versus
                         }
                         else if (blockController.DominantFaction == Faction.Cat)
                         {
-                            blockDescription += $"<color=#ff00ffff>Cats</color> are the dominant faction.{Environment.NewLine}";
+                            blockDescription += $"<color=#00ffffff>Cats</color> are the dominant faction.{Environment.NewLine}";
                         }
-                        blockDescription += $"<color=#00ffffff>{blockController.Dogs.Count}/{blockController.FactionMembersSupported}</color> Dogs present with {blockController.GetPriority(Faction.Dog)} priority.{Environment.NewLine}";
-                        blockDescription += $"<color=#ff00ffff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present with {blockController.GetPriority(Faction.Cat)} priority.{Environment.NewLine}";
-                        blockDescription += $"Type: {blockController.BlockType}{Environment.NewLine}";
+
+                        var dogPriorityMessage = FormatPriorityWithColour(blockController, Faction.Dog);
+                        var catPriorityMessage = FormatPriorityWithColour(blockController, Faction.Cat);
+                        
+                        if (blockController.Dogs.Count > 0)
+                        {
+                            blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count}/{blockController.FactionMembersSupported}</color> Dogs present with {dogPriorityMessage}.{Environment.NewLine}";
+                        }
+                        else
+                        {
+                            blockDescription += $"<color=#ff0000>No</color> Dogs present. Block set to {dogPriorityMessage}{Environment.NewLine}";
+                        }
+
+                        if (blockController.Cats.Count > 0)
+                        {
+                            blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present with {catPriorityMessage}.{Environment.NewLine}";
+                        }
+                        else
+                        {
+                            blockDescription += $"<color=#00ff00ff>No</color> Cats present. Block set to {catPriorityMessage}.{Environment.NewLine}";
+                        }
+                        
+                        blockDescription += $"Block Type: {blockController.BlockType}{Environment.NewLine}";
                         blockDescription += $"{Environment.NewLine}";
-                        blockDescription += $"<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block.</color></size>{Environment.NewLine}";
-                        blockDescription += "<size=20><color=#00ff00ff>Right Click to cycle block priority.</color></size>";
+                        blockDescription += statusMessage;
                         m_BlockContent.text = blockDescription;
                         // TODO need to position it so it doesn't go offscreen when hovering over blocks near the edge
                         m_BlockTooltip.position = Input.mousePosition;
@@ -105,6 +128,35 @@ namespace WizardsCode.Versus
                     }
                 }
             }
+        }
+
+        private string FormatPriorityWithColour(BlockController controller, Faction faction)
+        {
+            var result = string.Empty;
+            var priority = controller.GetPriority(faction);
+            var priorityColour = string.Empty;
+
+            switch (priority)
+            {
+                case Priority.Low:
+                    priorityColour = "#00ffffff";
+                    break;
+                case Priority.Medium:
+                    priorityColour = "#00ff00";
+                    break;
+                case Priority.High:
+                    priorityColour = "#ff0000";
+                    break;
+                case Priority.Breed:
+                    priorityColour = "#ff00ff";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            result = $"<color={priorityColour}>{priority}</color> priority";
+
+            return result;
         }
 
         private void TogglePriority(BlockController blockController)
