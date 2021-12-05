@@ -10,14 +10,13 @@ using static WizardsCode.Versus.Controller.BlockController;
 namespace WizardsCode.Versus
 {
     /// <summary>
-    /// The TopDownUX manages the entire user experience in the top down view. 
+    /// The GameManager manages the entire user experience and game in the top down view. 
     /// User input and coordination of the UI is all managed here.
     /// </summary>
-    public class TopDownUX : MonoBehaviour
+    public class GameManager : MonoBehaviour
     {
+        public enum GameMode { TopDown, FPS }
         [Header("Top Down Mode")]
-        [SerializeField, Tooltip("If true then the player is in top down mode, if false they are in FPS mode.")]
-        bool m_IsTopDownMode = true;
         [SerializeField, Tooltip("Camera used in top down view.")]
         Camera m_TopDownCamera;
         [SerializeField, Tooltip("The top down data ui to be displayed whenever top down mode is enabled.")]
@@ -35,6 +34,19 @@ namespace WizardsCode.Versus
         [SerializeField, Tooltip("The text component within which the tooltip information for a block will be displayed.")] 
         private TextMeshProUGUI m_BlockContent;
 
+        public delegate void OnGameModeChangedDelegate();
+        public OnGameModeChangedDelegate OnGameModeChanged;
+
+        private GameMode currentGameMode;
+        public bool IsTopDownMode
+        {
+            get { return currentGameMode == GameMode.TopDown; }
+        }
+        public bool IsFpsMode
+        {
+            get { return currentGameMode == GameMode.FPS; }
+        }
+
         private void Start()
         {
             // Hide the tooltip on startup
@@ -44,7 +56,7 @@ namespace WizardsCode.Versus
 
         private void Update()
         {
-            if (m_IsTopDownMode)
+            if (currentGameMode == GameMode.TopDown)
             {
                 Ray ray = m_TopDownCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
@@ -108,22 +120,24 @@ namespace WizardsCode.Versus
 
         public void EnableFpsMode(BlockController block)
         {
-            m_IsTopDownMode = false;
+            currentGameMode = GameMode.FPS;
             ConfigureGameObjects(block);
+            if (OnGameModeChanged != null) OnGameModeChanged.Invoke(); 
         }
 
         public void EnableTopDownMode()
         {
-            m_IsTopDownMode = true;
+            currentGameMode = GameMode.TopDown;
             ConfigureGameObjects(null);
+            if (OnGameModeChanged != null) OnGameModeChanged.Invoke();
         }
 
         private void ConfigureGameObjects(BlockController block)
         {
-            m_TopDownUI.gameObject.SetActive(m_IsTopDownMode);
-            m_TopDownCamera.gameObject.SetActive(m_IsTopDownMode);
-            m_FpsHUD.gameObject.SetActive(!m_IsTopDownMode);
-            if (m_IsTopDownMode)
+            m_TopDownUI.gameObject.SetActive(currentGameMode == GameMode.TopDown);
+            m_TopDownCamera.gameObject.SetActive(currentGameMode == GameMode.TopDown);
+            m_FpsHUD.gameObject.SetActive(currentGameMode == GameMode.FPS);
+            if (currentGameMode == GameMode.TopDown)
             {
                 m_FpsGameMode.Despawn();
             } else
