@@ -13,6 +13,7 @@ namespace WizardsCode.Versus.Controller
     /// <summary>
     /// The animal controller is placed on each of the AI animals in the game and is responsible for managing their behaviour.
     /// </summary>
+    [RequireComponent(typeof(AudioSource))]
     public class AnimalController : RechargingHealthManager
     {
         public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide, Attack, Expand, Breed }
@@ -61,6 +62,8 @@ namespace WizardsCode.Versus.Controller
         float m_ChaseDistance = 100;
         [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
         Mine m_RepellentMinePrefab;
+        [SerializeField, Tooltip("A collection of sounds to play when the animal is chasing or attackng a target.")]
+        AudioClip[] m_AttackSounds;
 
         public LevelSystem m_LevelSystem = new LevelSystem();
 
@@ -78,6 +81,8 @@ namespace WizardsCode.Versus.Controller
         private float availableRepellent;
         private float timeToRevaluateState = 0;
         private float currentSpeedMultiplier = 1;
+
+        private AudioSource audioSource;
 
         public delegate void OnDeathDelegate(AnimalController animal);
         public OnDeathDelegate OnDeath;
@@ -136,6 +141,7 @@ namespace WizardsCode.Versus.Controller
         private void Start()
         {
             HomeBlock = GetComponentInParent<BlockController>();
+            audioSource = GetComponent<AudioSource>();
             sqrChaseDistance = m_ChaseDistance * m_ChaseDistance;
             sqrAttackDistance = m_AttackDistance * m_AttackDistance;
         }
@@ -335,6 +341,15 @@ namespace WizardsCode.Versus.Controller
             }
 
             float distanceToTarget = Vector3.SqrMagnitude(attackTarget.position - transform.position);
+
+
+            //OPTIMIZATION: only play sounds if within hearing distance of the player
+            if (!audioSource.isPlaying && Random.value > 0.1)
+            {
+                audioSource.clip = m_AttackSounds[Random.Range(0, m_AttackSounds.Length)];
+                audioSource.Play();
+            }
+
             if (distanceToTarget < sqrAttackDistance)
             {
                 if (Time.timeSinceLevelLoad > timeOfNextAttack)
