@@ -89,7 +89,11 @@ namespace WizardsCode.Versus.Controller
             get { return m_DogsPresent; }
         }
 
-        PlayerCharacter player = null;
+        public PlayerCharacter Player
+        {
+            get;
+            set;
+        }
 
         public Faction DominantFaction
         {
@@ -196,7 +200,7 @@ namespace WizardsCode.Versus.Controller
             if (character)
             {
                 character.CurrentBlock = this;
-                player = character;
+                Player = character;
             }
         }
 
@@ -219,7 +223,7 @@ namespace WizardsCode.Versus.Controller
             PlayerCharacter character = other.GetComponentInChildren<PlayerCharacter>();
             if (character)
             {
-                player = null;
+                Player = null;
             }
         }
 
@@ -279,23 +283,10 @@ namespace WizardsCode.Versus.Controller
                 timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
                 UpdateFactionInfluence();
             }
-            UpdateAnimalAI();
 
 # if UNITY_EDITOR
             UpdateDebugInfo();
 #endif
-        }
-
-        private void UpdateAnimalAI()
-        {
-            if (player)
-            {
-                for (int i = 0; i < m_DogsPresent.Count; i++)
-                {
-                    m_DogsPresent[i].currentState = State.Attack;
-                    m_DogsPresent[i].attackTarget = player.transform;
-                }
-            }
         }
 
         private void UpdateFactionInfluence()

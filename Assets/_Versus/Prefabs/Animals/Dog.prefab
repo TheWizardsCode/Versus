@@ -354,6 +354,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 67042a372d63af247a508c702ba03e29, type: 3}
   - {fileID: 8300000, guid: ea921de7e067dfa40abadfbe23c17788, type: 3}
   - {fileID: 8300000, guid: a7c5fbb4ca1237b448f47e12aeb57e8b, type: 3}
+  m_DeathSounds:
+  - {fileID: 8300000, guid: 7a5ca30ef1aee0f4cb8b30ef050a6ac5, type: 3}
 --- !u!54 &6456674610444847761
 Rigidbody:
   m_ObjectHideFlags: 0

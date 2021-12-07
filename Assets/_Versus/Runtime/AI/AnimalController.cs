@@ -62,8 +62,10 @@ namespace WizardsCode.Versus.Controller
         float m_ChaseDistance = 100;
         [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
         Mine m_RepellentMinePrefab;
-        [SerializeField, Tooltip("A collection of sounds to play when the animal is chasing or attackng a target.")]
-        AudioClip[] m_AttackSounds;
+        [SerializeField, Tooltip("A collection of sounds, one of which will be played when the animal is chasing or attackng a target.")]
+        AudioClip[] m_AttackSounds = new AudioClip[0];
+        [SerializeField, Tooltip("A collection of sounds, one of which will be played when the animal decides to leave the city (dies).")]
+        AudioClip[] m_DeathSounds = new AudioClip[0];
 
         public LevelSystem m_LevelSystem = new LevelSystem();
 
@@ -191,6 +193,8 @@ namespace WizardsCode.Versus.Controller
                     MoveTargetPosition = GetFriendlyPositionOrDie();
                     OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by too much repellent. They are fleeing from the block."));
                 }
+
+                ScanForEnemies();
 
                 switch (currentState)
                 {
@@ -344,7 +348,7 @@ namespace WizardsCode.Versus.Controller
 
 
             //OPTIMIZATION: only play sounds if within hearing distance of the player
-            if (!audioSource.isPlaying && Random.value > 0.1)
+            if (!audioSource.isPlaying && m_AttackSounds.Length > 0 && Random.value > 0.1)
             {
                 audioSource.clip = m_AttackSounds[Random.Range(0, m_AttackSounds.Length)];
                 audioSource.Play();
@@ -391,6 +395,12 @@ namespace WizardsCode.Versus.Controller
         void ScanForEnemies()
         {
             if (currentState == State.Attack || currentState == State.Flee) return;
+
+            if (m_Faction == Faction.Dog && HomeBlock.Player)
+            {
+                currentState = State.Attack;
+                attackTarget = HomeBlock.Player.transform;
+            }
 
             List<AnimalController> enemies = HomeBlock.GetEnemiesOf(m_Faction);
             float sqrDistance = float.MaxValue;
@@ -556,12 +566,17 @@ namespace WizardsCode.Versus.Controller
 
         void Die()
         {
+            if (m_DeathSounds.Length > 0)
+            {
+                audioSource.clip = m_DeathSounds[Random.Range(0, m_DeathSounds.Length)];
+                audioSource.Play();
+            }
             HomeBlock.RemoveAnimal(this);
             if (OnDeath != null)
             {
                 OnDeath.Invoke(this);
             }
-            Destroy(gameObject);
+            Destroy(gameObject, 0.5f);
         }
 
         private void OnDrawGizmosSelected()
