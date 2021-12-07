@@ -56,6 +56,8 @@ namespace WizardsCode.Versus.Controllers
         Importance m_ConsoleLoggerMinImportance = Importance.Low;
         [SerializeField, Tooltip("If set to true the city will be generated at runtime. If set to false use the `Generate City` context menu item.")]
         bool m_GenerateAtRuntime = false;
+        [SerializeField, Tooltip("If set to true AI will be generated when the game starts, otherwise none will be generated.")]
+        bool m_GenerateAI = true;
 
         BlockController[,] cityBlocks;
 
@@ -90,7 +92,10 @@ namespace WizardsCode.Versus.Controllers
             {
                 BlockController block = m_CityBlockRoot.GetChild(i).GetComponent<BlockController>();
                 cityBlocks[block.Coordinates.x, block.Coordinates.y] = block;
-                PopulateBlock(block);
+                if (m_GenerateAI)
+                {
+                    PopulateBlock(block);
+                }
             }
         }
 
