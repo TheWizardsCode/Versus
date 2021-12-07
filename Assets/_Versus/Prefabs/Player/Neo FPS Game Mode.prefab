@@ -77,9 +77,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpawnOnStart: 1
-  m_DeathSequenceDuration: 5
-  m_DeathAction: 2
   m_PlayerPrefab: {fileID: 114330862915175946, guid: 457e08bea6e9d1341946b479e34dff11, type: 3}
-  m_CharacterPrefab: {fileID: 114012715847808828, guid: a49bbded97434e0429dac07e7f1d7ea3, type: 3}
-  m_StartingLoadout: {fileID: 0}
+  m_CharacterPrefab: {fileID: 0}
   m_SpawnBlockCoordinates: {x: 10, y: 10}
