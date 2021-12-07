@@ -283,10 +283,6 @@ namespace WizardsCode.Versus.Controller
                 timeOfNextFactionMapUpdate = m_FactionMapUpdateFrequency + Time.timeSinceLevelLoad;
                 UpdateFactionInfluence();
             }
-
-# if UNITY_EDITOR
-            UpdateDebugInfo();
-#endif
         }
 
         private void UpdateFactionInfluence()
@@ -381,20 +377,6 @@ namespace WizardsCode.Versus.Controller
         public override string ToString()
         {
             return $"{name} {Coordinates}.";
-        }
-
-        private void UpdateDebugInfo()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Block Influence (0 to 1,  cats to dogs): {NormalizedFactionInfluence}");
-            sb.AppendLine();
-            sb.AppendLine($"There are {m_CatsPresent.Count} Cats present.");
-            sb.AppendLine($"The Cat director has set a priorty of {m_CatPriority} on this block.");
-            sb.AppendLine();
-            sb.AppendLine($"There are {m_DogsPresent.Count} Dogs present.");
-            sb.AppendLine($"The Dog director has set a priorty of {m_DogPriority} on this block.");
-
-            m_DebugInfo = sb.ToString();
         }
     }
 }
