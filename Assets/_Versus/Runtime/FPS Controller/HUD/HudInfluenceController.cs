@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NeoFPS;
 using WizardsCode.Versus.Controller;
 using System;
+using UnityEngine.UI;
 
 namespace WizardsCode.Versus.FPS
 {
@@ -11,6 +12,8 @@ namespace WizardsCode.Versus.FPS
     {
         [SerializeField, Tooltip("The rect transform of the filled bar.")]
         RectTransform m_BarRect = null;
+        [SerializeField, Tooltip("The rect transform of the filled bar.")]
+        Text m_EnemyCountText = null;
 
         BlockController m_Block;
 
@@ -50,6 +53,13 @@ namespace WizardsCode.Versus.FPS
             if (m_Block != null)
             {
                 m_BarRect.localScale = new Vector2(1 - m_Block.NormalizedFactionInfluence, 1f);
+                if (m_Block.GetEnemiesOf(AnimalController.Faction.Cat) != null)
+                {
+                    m_EnemyCountText.text = m_Block.GetEnemiesOf(AnimalController.Faction.Cat).Count.ToString();
+                } else
+                {
+                    m_EnemyCountText.text = "0";
+                }
             } else
             {
                 m_BarRect.localScale = new Vector2(0.5f, 1f);
