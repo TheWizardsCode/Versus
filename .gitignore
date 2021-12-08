@@ -87,3 +87,6 @@ DevLog/ScreenCaptures/
 
 # Rider cache directory
 .idea
+
+# StreamingAssets
+!StreamingAssets/
