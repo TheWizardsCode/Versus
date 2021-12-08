@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using WizardsCode.Versus.Controller;
 using static WizardsCode.Versus.Controller.AnimalController;
@@ -33,26 +31,39 @@ namespace WizardsCode.Versus
         private RectTransform m_BlockTooltip;
         [SerializeField, Tooltip("The text component within which the tooltip information for a block will be displayed.")] 
         private TextMeshProUGUI m_BlockContent;
+        [SerializeField, Tooltip("The container that holds the scrolling game messages")]
+        private GameObject m_EventMessageContainer;
+        [SerializeField, Tooltip("A game object containing a TextMeshProUGUI object for displaying game messages")]
+        private GameObject m_EventMessageTextPrefab;
         
-        private const string statusMessage = "<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block</color></size>                              <size=20><color=#00ff00ff>Right Click to cycle block priority</color></size>";
-
+        private const string statusMessage = "<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block</color></size>                              <size=20><color=#00ff00ff>Right Click to cycle cat block priority</color></size>";
+        private MessageLogger messageLogger;
+        private GameMode currentGameMode;
+        
         public delegate void OnGameModeChangedDelegate();
         public OnGameModeChangedDelegate OnGameModeChanged;
 
-        private GameMode currentGameMode;
         public bool IsTopDownMode
         {
             get { return currentGameMode == GameMode.TopDown; }
         }
+
         public bool IsFpsMode
         {
             get { return currentGameMode == GameMode.FPS; }
         }
 
+        private void Awake()
+        {
+            messageLogger = new MessageLogger(m_EventMessageTextPrefab, m_EventMessageContainer)
+            {
+                // TODO can be exposed as a configurable setting
+                MaxMessages = 100
+            };
+        }
+        
         private void Start()
         {
-            // Hide the tooltip on startup
-            m_BlockTooltip.gameObject.SetActive(false);
             EnableTopDownMode();
         }
 
@@ -69,6 +80,7 @@ namespace WizardsCode.Versus
                     {
                         var blockDescription = string.Empty;
 
+                        blockDescription += $"<color=#ffa500><b>Faction</b></color>{Environment.NewLine}";
                         if (blockController.DominantFaction == Faction.Neutral) 
                         {
                             blockDescription += $"<color=#ff0000>No</color> dominant faction.{Environment.NewLine}";
@@ -85,31 +97,45 @@ namespace WizardsCode.Versus
                         var dogPriorityMessage = FormatPriorityWithColour(blockController, Faction.Dog);
                         var catPriorityMessage = FormatPriorityWithColour(blockController, Faction.Cat);
                         
+                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Dogs</b></color>{Environment.NewLine}";
                         if (blockController.Dogs.Count > 0)
                         {
-                            blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count}/{blockController.FactionMembersSupported}</color> Dogs present with {dogPriorityMessage}.{Environment.NewLine}";
+                            blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count}/{blockController.FactionMembersSupported}</color> Dogs present.{Environment.NewLine}";
+                            if (blockController.Dogs.Count > blockController.FactionMembersSupported)
+                            {
+                                blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count - blockController.FactionMembersSupported}</color> Dogs visiting.{Environment.NewLine}";
+                            }
+                            blockDescription += $"Block set to {dogPriorityMessage}.{Environment.NewLine}";
                         }
                         else
                         {
-                            blockDescription += $"<color=#ff0000>No</color> Dogs present. Block set to {dogPriorityMessage}{Environment.NewLine}";
+                            blockDescription += $"<color=#ff0000>No</color> Dogs present.{Environment.NewLine}";
+                            blockDescription += $"Block set to {dogPriorityMessage}.{Environment.NewLine}";
                         }
 
+                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Cats</b></color>{Environment.NewLine}";
                         if (blockController.Cats.Count > 0)
                         {
-                            blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present with {catPriorityMessage}.{Environment.NewLine}";
+                            blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present.{Environment.NewLine}";
+                            if (blockController.Cats.Count > blockController.FactionMembersSupported)
+                            {
+                                blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count - blockController.FactionMembersSupported}</color> Cats visiting.{Environment.NewLine}";
+                            }
+                            blockDescription += $"Block set to {catPriorityMessage}.{Environment.NewLine}";
                         }
                         else
                         {
-                            blockDescription += $"<color=#00ff00ff>No</color> Cats present. Block set to {catPriorityMessage}.{Environment.NewLine}";
+                            blockDescription += $"<color=#00ff00ff>No</color> Cats present.{Environment.NewLine}";
+                            blockDescription += $"Block set to {catPriorityMessage}.{Environment.NewLine}";
                         }
                         
+                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Block</b></color>{Environment.NewLine}";
                         blockDescription += $"Block Type: {blockController.BlockType}{Environment.NewLine}";
-                        blockDescription += $"{Environment.NewLine}";
+
+                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Help</b></color>{Environment.NewLine}";
                         blockDescription += statusMessage;
                         m_BlockContent.text = blockDescription;
-                        // TODO need to position it so it doesn't go offscreen when hovering over blocks near the edge
-                        m_BlockTooltip.position = Input.mousePosition;
-                        m_BlockTooltip.gameObject.SetActive(true);
+                        
                         if (Input.GetMouseButtonDown(0))
                         {
                             EnableFpsMode(blockController);
@@ -122,10 +148,8 @@ namespace WizardsCode.Versus
                 }
                 else
                 {
-                    if (m_BlockTooltip.gameObject.activeSelf)
-                    {
-                        m_BlockTooltip.gameObject.SetActive(false);
-                    }
+                    m_BlockContent.text =
+                        $"<color=#ffa500><b>Help</b></color>{Environment.NewLine}Hover over a city block tile to get info.";
                 }
             }
         }
@@ -196,6 +220,16 @@ namespace WizardsCode.Versus
             {
                 m_FpsGameMode.Spawn(block);
             }
+        }
+
+        public void OnAnimalAction(VersuseEvent versusevent)
+        {
+            messageLogger.SendMessageToChat(versusevent.Description);
+        }
+
+        public void OnBlockUpdated(BlockController block, VersuseEvent versusevent)
+        {
+            messageLogger.SendMessageToChat(versusevent.Description);
         }
     }
 }

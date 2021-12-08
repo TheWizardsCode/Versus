@@ -242,7 +242,7 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
 
-            OnBlockUpdated(this, new BlockUpdateEvent($"The {animal.m_Faction} called {animal} moved into {ToString()}."));
+            OnBlockUpdated(this, new BlockUpdateEvent($"{animal} moved into {ToString()}"));
         }
 
         private void OnDeath(AnimalController animal)
@@ -264,7 +264,7 @@ namespace WizardsCode.Versus.Controller
                     break;
             }
 
-            OnBlockUpdated(this, new BlockUpdateEvent($"The {animal.m_Faction} called {animal} moved out of {ToString()}."));
+            OnBlockUpdated(this, new BlockUpdateEvent($"{animal} moved out of {ToString()}"));
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace WizardsCode.Versus.Controller
 
         public override string ToString()
         {
-            return $"{name} {Coordinates}.";
+            return $"{name} {Coordinates}";
         }
     }
 }

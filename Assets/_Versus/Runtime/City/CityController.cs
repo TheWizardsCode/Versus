@@ -49,6 +49,8 @@ namespace WizardsCode.Versus.Controllers
         [Header("Top Down")] 
         [SerializeField, Tooltip("Root object where city blocks are created")]
         Transform m_CityBlockRoot;
+        [SerializeField, Tooltip("The UI manager to access elements")] 
+        GameManager m_TopDownManager;
         Camera m_TopDownCamera;
 
         [Header("Debug")]
@@ -209,6 +211,7 @@ namespace WizardsCode.Versus.Controllers
             maxFactionSize[(int)block.DominantFaction] += block.FactionMembersSupported;
 
             block.OnBlockUpdated += eventLogger.OnEventReceived;
+            block.OnBlockUpdated += m_TopDownManager.OnBlockUpdated;
             block.OnBlockDominanceChanged += eventLogger.OnBlockDominanceChanged;
             block.OnBlockDominanceChanged += OnBlockOwnershipChanged;
 
@@ -240,6 +243,7 @@ namespace WizardsCode.Versus.Controllers
             animal.name = $"Cat {nextCatID}";
             nextCatID++;
             block.AddAnimal(animal);
+            animal.OnAnimalAction += m_TopDownManager.OnAnimalAction;
             animal.OnAnimalAction += eventLogger.OnEventReceived;
             animal.transform.position = block.GetRandomPoint();
             animal.OnDeath += OnDeath;

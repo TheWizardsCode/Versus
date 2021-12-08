@@ -584,5 +584,10 @@ namespace WizardsCode.Versus.Controller
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(MoveTargetPosition, 0.5f);
         }
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
 }
