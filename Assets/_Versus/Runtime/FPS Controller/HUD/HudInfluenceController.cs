@@ -53,16 +53,11 @@ namespace WizardsCode.Versus.FPS
             if (m_Block != null)
             {
                 m_BarRect.localScale = new Vector2(1 - m_Block.NormalizedFactionInfluence, 1f);
-                if (m_Block.GetEnemiesOf(AnimalController.Faction.Cat) != null)
-                {
-                    m_EnemyCountText.text = m_Block.GetEnemiesOf(AnimalController.Faction.Cat).Count.ToString();
-                } else
-                {
-                    m_EnemyCountText.text = "0";
-                }
+                m_EnemyCountText.text = m_Block.GetEnemiesOf(AnimalController.Faction.Cat).Count.ToString();
             } else
             {
                 m_BarRect.localScale = new Vector2(0.5f, 1f);
+                m_EnemyCountText.text = "0";
             }
         }
     }
