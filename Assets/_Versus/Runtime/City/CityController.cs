@@ -1,5 +1,8 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Random = UnityEngine.Random;
 using WizardsCode.Versus.Controller;
 using static WizardsCode.Versus.Controller.AnimalController;
@@ -49,6 +52,8 @@ namespace WizardsCode.Versus.Controllers
         [Header("Top Down")] 
         [SerializeField, Tooltip("Root object where city blocks are created")]
         Transform m_CityBlockRoot;
+        [SerializeField, Tooltip("The UI manager to access elements")] 
+        GameManager m_TopDownManager;
         Camera m_TopDownCamera;
 
         [Header("Debug")]
@@ -66,7 +71,11 @@ namespace WizardsCode.Versus.Controllers
         int nextDogID = 0;
         int[] factionPopulation;
         int[] maxFactionSize;
-
+        private List<string> boyCatNames;
+        private List<string> girlCatNames;
+        private List<string> boyDogNames;
+        private List<string> girlDogNames;
+        
         public int Width {
             get { return m_CityWidth; }
         }
@@ -76,8 +85,24 @@ namespace WizardsCode.Versus.Controllers
             get { return m_CityDepth; }
         }
 
+        /// <summary>
+        /// Loads a StreamingAsset called filename and returns a new list of strings (1 for each line)
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        private List<string> LoadNames(string filename)
+        {
+            var allLines = File.ReadAllLines(Path.Combine(Application.streamingAssetsPath, filename));
+            return allLines.Select(line => line.Trim()).ToList();
+        }        
+
         private void Start()
         {
+            girlCatNames = LoadNames("girlcatnames.txt");
+            boyCatNames = LoadNames("boycatnames.txt");
+            girlDogNames = LoadNames("girldognames.txt");
+            boyDogNames = LoadNames("boydognames.txt");
+            
             eventLogger = new EventLogger(m_ConsoleLoggerMinImportance);
             factionPopulation = new int[Enum.GetNames(typeof(Faction)).Length];
             maxFactionSize = new int[Enum.GetNames(typeof(Faction)).Length];
@@ -209,6 +234,7 @@ namespace WizardsCode.Versus.Controllers
             maxFactionSize[(int)block.DominantFaction] += block.FactionMembersSupported;
 
             block.OnBlockUpdated += eventLogger.OnEventReceived;
+            block.OnBlockUpdated += m_TopDownManager.OnBlockUpdated;
             block.OnBlockDominanceChanged += eventLogger.OnBlockDominanceChanged;
             block.OnBlockDominanceChanged += OnBlockOwnershipChanged;
 
@@ -237,9 +263,10 @@ namespace WizardsCode.Versus.Controllers
         internal AnimalController SpawnCat(BlockController block)
         {
             AnimalController animal = Instantiate<AnimalController>(m_CatPrefab);
-            animal.name = $"Cat {nextCatID}";
+            animal.name = Random.value > 0.5f ? girlCatNames[Random.Range(0, girlCatNames.Count)] : boyCatNames[Random.Range(0, boyCatNames.Count)];
             nextCatID++;
             block.AddAnimal(animal);
+            animal.OnAnimalAction += m_TopDownManager.OnAnimalAction;
             animal.OnAnimalAction += eventLogger.OnEventReceived;
             animal.transform.position = block.GetRandomPoint();
             animal.OnDeath += OnDeath;
@@ -250,7 +277,7 @@ namespace WizardsCode.Versus.Controllers
         internal AnimalController SpawnDog(BlockController block)
         {
             AnimalController animal = Instantiate<AnimalController>(m_DogPrefab);
-            animal.name = $"Dog {nextDogID}";
+            animal.name = Random.value > 0.5f ? girlDogNames[Random.Range(0, girlDogNames.Count)] : boyDogNames[Random.Range(0, boyDogNames.Count)];
             nextDogID++;
             block.AddAnimal(animal);
             animal.transform.position = block.GetRandomPoint();
