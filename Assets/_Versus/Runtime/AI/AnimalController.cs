@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Versus.AI;
 using static WizardsCode.Versus.Controller.BlockController;
+using NeoSaveGames.Serialization;
 
 namespace WizardsCode.Versus.Controller
 {
@@ -16,7 +17,7 @@ namespace WizardsCode.Versus.Controller
     [RequireComponent(typeof(AudioSource))]
     public class AnimalController : RechargingHealthManager
     {
-        public enum State { Idle, GatherRepellent, PlaceRepellentMine, Flee, Hide, Attack, Expand, Breed }
+        public enum State { Idle, GatherRepellent, PlaceRepellent, Flee, Hide, Attack, Expand, Breed }
         public enum Faction { Cat, Dog, Neutral }
 
         [Space]
@@ -40,6 +41,10 @@ namespace WizardsCode.Versus.Controller
         bool randomizeReppelentGatheringSpeed = true;
         [SerializeField, Tooltip("The maximum rate at which this animal will collect repellent for making weaponry. Measured in repellent per second. If randomizeReppelentGatheringSpeed is true the amount collected will randomized between 0.01 and this value on start. Note that this max level will only be reached when the animal reaches its maximum level. If set to false it will be this amount precisely.")]
         float m_MaxRepellentGatheringSpeed = 6f;
+        [SerializeReference, Tooltip("The repellent mine this animal knows how to craft and plant.")]
+        Mine m_RepellentMine;
+        [SerializeReference, Tooltip("The repellent ammo this animal knows how to craft and plant.")]
+        RepellentPickup[] m_RepellentAmmoPickups;
 
         [Header("Faction")]
         [SerializeField, Tooltip("The faction this animal belongs to and fights for.")]
@@ -70,8 +75,6 @@ namespace WizardsCode.Versus.Controller
         float m_Damage = 7.5f;
         [SerializeField, Tooltip("The chase distance is how far from the center of the home block this animal will chase a target before giving up.")]
         float m_ChaseDistance = 100;
-        [SerializeField, Tooltip("The mines this animal knows how to craft and plant.")]
-        Mine m_RepellentMinePrefab;
         [SerializeField, Tooltip("A collection of sounds, one of which will be played when the animal is chasing or attackng a target.")]
         AudioClip[] m_AttackSounds = new AudioClip[0];
         [SerializeField, Tooltip("A collection of sounds, one of which will be played when the animal decides to leave the city (dies).")]
@@ -83,6 +86,7 @@ namespace WizardsCode.Versus.Controller
         public OnAnimalActionDelegate OnAnimalAction;
 
         internal State currentState = State.Idle;
+        private float minRepellentNeeded;
         internal Transform attackTarget;
         private float sqrChaseDistance = 0;
         private float sqrAttackDistance = 0;
@@ -146,7 +150,7 @@ namespace WizardsCode.Versus.Controller
         {
             get
             {
-                return m_RepellentMinePrefab != null && availableRepellent >= m_RepellentMinePrefab.RequiredRepellent;
+                return availableRepellent >= minRepellentNeeded;
             }
         }
 
@@ -163,6 +167,19 @@ namespace WizardsCode.Versus.Controller
             audioSource = GetComponent<AudioSource>();
             sqrChaseDistance = m_ChaseDistance * m_ChaseDistance;
             sqrAttackDistance = m_AttackDistance * m_AttackDistance;
+            minRepellentNeeded = float.MaxValue;
+            for (int i = 0; i < m_RepellentAmmoPickups.Length; i++)
+            {
+                if (m_RepellentAmmoPickups[i].RequiredRepellent < minRepellentNeeded)
+                {
+                    minRepellentNeeded = m_RepellentAmmoPickups[i].RequiredRepellent;
+                }
+            }
+
+            if (m_RepellentMine.RequiredRepellent < minRepellentNeeded)
+            {
+                minRepellentNeeded = m_RepellentMine.RequiredRepellent;
+            }
         }
 
         private void SetColour(Color32 color)
@@ -240,8 +257,8 @@ namespace WizardsCode.Versus.Controller
                     case State.GatherRepellent:
                         UpdateGatherRepellentState();
                         break;
-                    case State.PlaceRepellentMine:
-                        UpdatePlaceRepellentMineState();
+                    case State.PlaceRepellent:
+                        UpdatePlaceRepellent();
                         break;
                     case State.Flee:
                         currentSpeedMultiplier = 2;
@@ -276,15 +293,35 @@ namespace WizardsCode.Versus.Controller
             }
         }
 
-        private void UpdatePlaceRepellentMineState()
+        private void UpdatePlaceRepellent()
         {
             currentSpeedMultiplier = 1;
+
+            int dropIndex = int.MaxValue;
+            if (HomeBlock.Player)
+            {
+                for (dropIndex = 0; dropIndex < m_RepellentAmmoPickups.Length; dropIndex++)
+                {
+                    if (m_RepellentAmmoPickups[dropIndex].RequiredRepellent < availableRepellent && Random.value < 1f / m_RepellentAmmoPickups.Length) break;
+                }
+            }
+
             if (Mathf.Approximately(Vector3.SqrMagnitude(MoveTargetPosition - transform.position), 0))
             {
-                Mine go = Instantiate<Mine>(m_RepellentMinePrefab);
+                //OPTIMIZATION Use Pool
+                GameObject go;
+                if (dropIndex > m_RepellentAmmoPickups.Length)
+                {
+                    go = Instantiate<Mine>(m_RepellentMine).gameObject;
+                    availableRepellent -= m_RepellentMine.RequiredRepellent;
+                }
+                else
+                {
+                    go = Instantiate(m_RepellentAmmoPickups[dropIndex].gameObject);
+                    availableRepellent -= m_RepellentAmmoPickups[dropIndex].RequiredRepellent;
+                }
                 go.transform.position = transform.position;
-                availableRepellent -= go.RequiredRepellent;
-                currentState = State.GatherRepellent;
+                currentState = State.Idle;
                 // TODO experience awarded should be configurable and/or a random range
                 m_LevelSystem.AddExperience(2);
                 OnAnimalAction(new AnimalActionEvent($"{ToString()} placed a repellent mine at {transform.position}.", Importance.Low));
@@ -312,7 +349,7 @@ namespace WizardsCode.Versus.Controller
         {
             if (CanPlaceRepellentTrigger)
             {
-                currentState = State.PlaceRepellentMine;
+                currentState = State.PlaceRepellent;
             }
             else if (HomeBlock.GetPriority(m_Faction) == Priority.Breed && Random.value < m_BreedingChance)
             {

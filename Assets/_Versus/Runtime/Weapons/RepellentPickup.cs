@@ -1,24 +1,20 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using WizardsCode.Versus.Controller;
 using NeoFPS;
-using System;
+using WizardsCode.Versus.Controller;
 
-namespace WizardsCode.Versus.Weapons
+namespace WizardsCode.Versus
 {
-    /// <summary>
-    /// A mine will explode in a cloud of animal repellent.
-    /// </summary>
-    public class Mine : ExplosiveObject, IRepellentDrop
+    public class RepellentPickup : InventoryItemPickup, IRepellentDrop
     {
-        [Header("Mine")]
-        [SerializeField, Tooltip("The time to live for this mine. If it has not been triggered in this time it will just 'fade away' and no longer be effective.")]
+        [Header("Repellent Pickup")]
+        [SerializeField, Tooltip("The time to live for this repellent object. If it has not been triggered in this time it will just 'fade away' and no longer be effective.")]
         float m_TimeToLive = 10;
         [Header("Repellent")]
         [SerializeField, Tooltip("The kind of animal this repellent acts against.")]
         AnimalController.Faction m_RepelledType;
-        [SerializeField, Tooltip("The amount of repellent that is needed before this kind of mine can be crafted.")]
+        [SerializeField, Tooltip("The amount of repellent that is needed before this kind of repellent can be crafted.")]
         public float m_RequiredRepellent = 10;
 
         public float TimeToLive { get { return m_TimeToLive; } }
@@ -38,15 +34,6 @@ namespace WizardsCode.Versus.Weapons
 
             //OPTIMIZATION Use an object pool
             Destroy(gameObject);
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            AnimalController animal = other.GetComponentInParent<AnimalController>();
-            if (animal && animal.m_Faction == m_RepelledType)
-            {
-                AddDamage(50);
-            }
         }
     }
 }

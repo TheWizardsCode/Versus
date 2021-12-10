@@ -89,6 +89,9 @@ namespace WizardsCode.Versus.Controller
             get { return m_DogsPresent; }
         }
 
+        /// <summary>
+        /// Return any player character that is in this block. Null if no character present.
+        /// </summary>
         public PlayerCharacter Player
         {
             get;

@@ -425,7 +425,7 @@ MonoBehaviour:
   m_HealthyColourGradient:
     serializedVersion: 2
     key0: {r: 0, g: 0, b: 0, a: 1}
-    key1: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+    key1: {r: 0.18867922, g: 0.15432495, b: 0.13260946, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -451,10 +451,16 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  m_WeakFleeingColour: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  m_StrongFleeingColour: {r: 1, g: 1, b: 1, a: 1}
+  m_WeakFleeingColour:
+    serializedVersion: 2
+    rgba: 4278512639
+  m_StrongFleeingColour:
+    serializedVersion: 2
+    rgba: 4294967295
   randomizeReppelentGatheringSpeed: 1
   m_MaxRepellentGatheringSpeed: 6
+  m_RepellentMine: {fileID: 4929077495427469466, guid: 3b888958cdd1cee419742f462c8440ef, type: 3}
+  m_RepellentAmmoPickups: []
   m_Faction: 1
   m_HomeBlock: {fileID: 0}
   m_Speed: 2
@@ -466,7 +472,6 @@ MonoBehaviour:
   m_AttackFrequency: 1.2
   m_Damage: 20
   m_ChaseDistance: 100
-  m_RepellentMinePrefab: {fileID: 4929077495427469466, guid: 3b888958cdd1cee419742f462c8440ef, type: 3}
   m_AttackSounds:
   - {fileID: 8300000, guid: a3f7f87703a18084892d79da129f788c, type: 3}
   - {fileID: 8300000, guid: 6c6fb99215195a740a7e1b1753fad695, type: 3}
