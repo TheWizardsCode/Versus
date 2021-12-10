@@ -87,7 +87,6 @@ namespace WizardsCode.Versus.Controller
         private float sqrChaseDistance = 0;
         private float sqrAttackDistance = 0;
         private float timeOfNextAttack = 0;
-        private float timeOfNextEnemyScan = 0; 
         private float aiUpdateDelay;
         private Coroutine aiCoroutine;
         private float availableRepellent;
