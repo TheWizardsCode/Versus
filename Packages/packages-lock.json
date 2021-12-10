@@ -159,6 +159,12 @@
       },
       "hash": "c4d65ec4b8ad13848e89deae6e41c17d9b2577a6"
     },
+    "wizardscode.character": {
+      "version": "file:E:/WizardsCode/Character-Release",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
