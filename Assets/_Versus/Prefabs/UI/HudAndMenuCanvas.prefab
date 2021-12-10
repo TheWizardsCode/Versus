@@ -48268,7 +48268,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: WizardsCode.Versus.TopDownUX, org.wizardscode.versus
+        m_TargetAssemblyTypeName: WizardsCode.Versus.GameManager, org.wizardscode.versus
         m_MethodName: EnableTopDownMode
         m_Mode: 1
         m_Arguments:
