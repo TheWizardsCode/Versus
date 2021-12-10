@@ -24,6 +24,16 @@ namespace WizardsCode.Versus.Controller
         [Header("Animal AI")]
         [SerializeField, Tooltip("How frequently the animal should make decisions. Not that the actual time between decisions will be +/- 10% of this value.")]
         float m_DecisionFrequency = 0.25f;
+        [SerializeField, Tooltip("If the animal is reduced to this level of health they will flee from an attack but stay within the block."), Range(0f, 1f)]
+        float m_WeakFleeHealthPoint = 0.5f;
+        [SerializeField, Tooltip("If the animal is reduced to this level of health they will flee from the block."), Range(0f, 1f)]
+        float m_StrongFleeHealthPoint = 0.15f;
+        [SerializeField, Tooltip("The colour gradient to use when the animal is considered healthy. A colour on this gradient will be chosen randomly at start.")]
+        Gradient m_HealthyColourGradient;
+        [SerializeField, Tooltip("The colour to use when the animal is fleeing from an attack, but is not yet fleeing the block.")]
+        Color32 m_WeakFleeingColour = Color.yellow;
+        [SerializeField, Tooltip("The colour to use when the animal is fleeing from the block.")]
+        Color32 m_StrongFleeingColour = Color.white;
 
         [Header("Attributes")]
         [SerializeField, Tooltip("If set to true then the rate of resource gathering will be randomly set upon creation of an object with this controller attached. If set to false then the rate can be set here.")]
@@ -83,6 +93,8 @@ namespace WizardsCode.Versus.Controller
         private float availableRepellent;
         private float timeToRevaluateState = 0;
         private float currentSpeedMultiplier = 1;
+        private Vector3 _moveTargetPosition;
+        private MeshFilter[] m_MeshFilters;
 
         private AudioSource audioSource;
 
@@ -102,7 +114,6 @@ namespace WizardsCode.Versus.Controller
             set { m_HomeBlock = value; }
         }
 
-        private Vector3 _moveTargetPosition;
         internal Vector3 MoveTargetPosition
         {
             get { return _moveTargetPosition; }
@@ -140,6 +151,13 @@ namespace WizardsCode.Versus.Controller
             }
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            m_MeshFilters = GetComponentsInChildren<MeshFilter>();
+            SetColour(m_HealthyColourGradient.Evaluate(Random.value));
+        }
+
         private void Start()
         {
             HomeBlock = GetComponentInParent<BlockController>();
@@ -148,27 +166,46 @@ namespace WizardsCode.Versus.Controller
             sqrAttackDistance = m_AttackDistance * m_AttackDistance;
         }
 
+        private void SetColour(Color32 color)
+        {
+            for (int i = 0; i < m_MeshFilters.Length; i++) {
+                Vector3[] vertices = m_MeshFilters[i].mesh.vertices;
+                Color32[] colors = new Color32[vertices.Length];
+
+                for (int v = 0; v < vertices.Length; v++)
+                {
+                    colors[v] = color;
+                }
+
+                m_MeshFilters[i].mesh.colors32 = colors;
+            }
+        }
+
         protected override void OnHealthChanged(float from, float to, bool critical, IDamageSource source)
         {
             if (to < from && to > 0)
             {
-                if (currentState == State.Expand)
+                if (to < healthMax * m_StrongFleeHealthPoint)
                 {
-                    if (to > healthMax / 4)
+                    SetColour(m_StrongFleeingColour);
+                    currentState = State.Flee;
+                    MoveTargetPosition = GetFriendlyPositionOrDie();
+                    OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by {from - to} units of repellent. They are abandoning their expansion orders and seeking refuge if they can find it."));
+                }
+                else if (to < healthMax * m_WeakFleeHealthPoint)
+                {
+
+                    if (currentState == State.Expand)
                     {
                         OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by {from - to} units of repellent. They are fleeing from the source but continuing to carry out their expansion orders."));
-                    } else
-                    {
-                        currentState = State.Flee;
-                        MoveTargetPosition = GetFriendlyPositionOrDie();
-                        OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by {from - to} units of repellent. They are abandoning their expansion orders and seeking refuge if they can find it."));
                     }
-                }
-                else
-                {
-                    currentState = State.Flee;
-                    MoveTargetPosition = GetNewWanderPositionWithinHomeBlock();
-                    OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by {from - to} units of repellent. They are fleeing from the source but staying within {HomeBlock} block for now."));
+                    else
+                    {
+                        SetColour(m_WeakFleeingColour);
+                        currentState = State.Flee;
+                        MoveTargetPosition = GetNewWanderPositionWithinHomeBlock();
+                        OnAnimalAction(new AnimalActionEvent($"{ToString()} has been hit by {from - to} units of repellent. They are fleeing from the source but staying within {HomeBlock} block for now."));
+                    }
                 }
             }
 
