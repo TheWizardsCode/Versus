@@ -310,7 +310,7 @@ namespace WizardsCode.Versus.Controller
             {
                 //OPTIMIZATION Use Pool
                 GameObject go;
-                if (dropIndex > m_RepellentAmmoPickups.Length)
+                if (dropIndex >= m_RepellentAmmoPickups.Length)
                 {
                     go = Instantiate<Mine>(m_RepellentMine).gameObject;
                     availableRepellent -= m_RepellentMine.RequiredRepellent;

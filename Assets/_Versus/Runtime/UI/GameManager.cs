@@ -5,6 +5,7 @@ using WizardsCode.Versus.Controller;
 using static WizardsCode.Versus.Controller.AnimalController;
 using static WizardsCode.Versus.Controller.BlockController;
 using NeoFPS.Samples;
+using NeoFPS;
 
 namespace WizardsCode.Versus
 {
@@ -20,8 +21,10 @@ namespace WizardsCode.Versus
         Camera m_TopDownCamera;
         [SerializeField, Tooltip("The top down data ui to be displayed whenever top down mode is enabled.")]
         RectTransform m_TopDownUI;
-        [SerializeField, Tooltip("The in game menu for the Top Down Mode.")]
-        InGameMenu m_InGameMenu;
+        [SerializeField, Tooltip("GUI elements that should only be enabled in Top Down Mode.")]
+        RectTransform[] m_TopDownGuiElements = new RectTransform[0];
+        [SerializeField, Tooltip("GUI elements that should only be enabled in FPS Mode.")]
+        RectTransform[] m_FpsGuiElements = new RectTransform[0];
 
         [Header("FPS Mode")]
         [SerializeField, Tooltip("The parent object containing the NeoFPSGameMode and other FPS specific objects. These will be enabled when entering the FPS mode.")]
@@ -45,6 +48,7 @@ namespace WizardsCode.Versus
         
         public delegate void OnGameModeChangedDelegate();
         public OnGameModeChangedDelegate OnGameModeChanged;
+        private float m_FpsHealth = 500;
 
         public bool IsTopDownMode
         {
@@ -82,11 +86,6 @@ namespace WizardsCode.Versus
                     if (blockController != null)
                     {
                         SetBlockDescription(blockController);
-
-                        if (Input.GetKeyDown(KeyCode.Escape))
-                        {
-                            m_InGameMenu.Show();
-                        }
 
                         if (Input.GetMouseButtonDown(0))
                         {
@@ -229,15 +228,35 @@ namespace WizardsCode.Versus
 
         private void ConfigureGameObjects(BlockController block)
         {
-            m_TopDownUI.gameObject.SetActive(currentGameMode == GameMode.TopDown);
-            m_TopDownCamera.gameObject.SetActive(currentGameMode == GameMode.TopDown);
-            m_FpsHUD.gameObject.SetActive(currentGameMode == GameMode.FPS);
+            bool isTopDown = currentGameMode == GameMode.TopDown;
+
+            m_TopDownUI.gameObject.SetActive(isTopDown);
+            m_TopDownCamera.gameObject.SetActive(isTopDown);
+            m_FpsHUD.gameObject.SetActive(!isTopDown);
+
+
+            for (int i = 0; i < m_TopDownGuiElements.Length; i++)
+            {
+                m_TopDownGuiElements[i].gameObject.SetActive(isTopDown);
+            }
+
+
+            for (int i = 0; i < m_FpsGuiElements.Length; i++)
+            {
+                m_FpsGuiElements[i].gameObject.SetActive(!isTopDown);
+            }
+
             if (currentGameMode == GameMode.TopDown)
             {
-                m_FpsGameMode.Despawn();
+                if (m_FpsGameMode.character != null)
+                {
+                    m_FpsHealth = m_FpsGameMode.character.GetComponent<BasicHealthManager>().health;
+                    m_FpsGameMode.Despawn();
+                }
             } else
             {
                 m_FpsGameMode.Spawn(block);
+                m_FpsGameMode.character.GetComponent<BasicHealthManager>().health = m_FpsHealth;
             }
         }
 
