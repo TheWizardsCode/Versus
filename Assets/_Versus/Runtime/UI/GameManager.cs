@@ -6,6 +6,7 @@ using static WizardsCode.Versus.Controller.AnimalController;
 using static WizardsCode.Versus.Controller.BlockController;
 using NeoFPS.Samples;
 using NeoFPS;
+using WizardsCode.Versus.Controllers;
 
 namespace WizardsCode.Versus
 {
@@ -41,10 +42,17 @@ namespace WizardsCode.Versus
         private GameObject m_EventMessageContainer;
         [SerializeField, Tooltip("A game object containing a TextMeshProUGUI object for displaying game messages")]
         private GameObject m_EventMessageTextPrefab;
-        
+
+        [Header("Status UI")]
+        [SerializeField, Tooltip("The text component that will display the cats current status.")]
+        private TMP_Text m_CatStatusLine;
+        [SerializeField, Tooltip("The text component that will display the dogs current status.")]
+        private TMP_Text m_DogStatusLine;
+
         private const string statusMessage = "<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block</color></size>                              <size=20><color=#00ff00ff>Right Click to cycle cat block priority</color></size>";
         private MessageLogger messageLogger;
         private GameMode currentGameMode;
+        private CityController cityController;
         
         public delegate void OnGameModeChangedDelegate();
         public OnGameModeChangedDelegate OnGameModeChanged;
@@ -67,6 +75,8 @@ namespace WizardsCode.Versus
                 // TODO can be exposed as a configurable setting
                 MaxMessages = 100
             };
+
+            cityController = FindObjectOfType<CityController>();
         }
         
         private void Start()
@@ -105,6 +115,12 @@ namespace WizardsCode.Versus
             }
         }
 
+        private void OnGUI()
+        {
+            m_CatStatusLine.text = $"{cityController.GetPopulation(Faction.Cat)} Cats.";
+            m_DogStatusLine.text = $"{cityController.GetPopulation(Faction.Dog)} Dogs.";
+        }
+
         public void QuitGame()
         {
             Debug.Log("Quit Game from Menu");
@@ -114,6 +130,8 @@ namespace WizardsCode.Versus
         private void SetBlockDescription(BlockController blockController)
         {
             var blockDescription = string.Empty;
+
+            blockDescription += $"{blockController.name}{Environment.NewLine}";
 
             blockDescription += $"<color=#ffa500><b>Faction</b></color>{Environment.NewLine}";
             if (blockController.DominantFaction == Faction.Neutral)
@@ -209,6 +227,7 @@ namespace WizardsCode.Versus
             {
                 pri = 0;
             }
+
             blockController.SetPriority(Faction.Cat, (Priority)pri);
         }
 

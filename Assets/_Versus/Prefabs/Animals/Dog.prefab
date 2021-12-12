@@ -466,7 +466,7 @@ MonoBehaviour:
   m_Speed: 2
   m_RotationSpeed: 5
   m_BreedingChance: 0.02
-  m_BreedingDuration: 120
+  m_BreedingDuration: 75
   m_EnemyScanFrequency: 2
   m_AttackDistance: 2.5
   m_AttackFrequency: 1.2

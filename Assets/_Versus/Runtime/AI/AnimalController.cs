@@ -351,15 +351,16 @@ namespace WizardsCode.Versus.Controller
             {
                 currentState = State.PlaceRepellent;
             }
-            else if (HomeBlock.GetPriority(m_Faction) == Priority.Breed && Random.value < m_BreedingChance)
+            else if (HomeBlock.CityController.GetPopulation(m_Faction) < HomeBlock.CityController.MaxFactionSize(m_Faction) 
+                && HomeBlock.GetPriority(m_Faction) == Priority.Breed 
+                && Random.value < m_BreedingChance)
             {
                 currentState = State.Breed;
                 timeToRevaluateState = Time.timeSinceLevelLoad + m_BreedingDuration;
             }
             else if (Random.value < 0.02f)
             {
-                if (health >= healthMax * 0.8f &&
-                    HomeBlock.GetPriority(m_Faction) == Priority.Low)
+                if (health >= healthMax * 0.8f && HomeBlock.FactionMembersSupported < HomeBlock.GetFriendsOf(m_Faction).Count)
                 {
                     SetToExpandStateIfPossible();
                 }
@@ -448,7 +449,7 @@ namespace WizardsCode.Versus.Controller
         /// </summary>
         private void SetToExpandStateIfPossible(int range = 3)
         {
-            ExpandToBlock = GetNearbyHighPriorityBlock(range);
+            ExpandToBlock = GetNearbyExpansionTargetBlock(range);
             if (ExpandToBlock != null)
             {
                 OnAnimalAction(new AnimalActionEvent($"{ToString()} is leaving {HomeBlock} in an attempt to take {ExpandToBlock} for the {m_Faction}s.", Importance.Medium));
@@ -591,7 +592,7 @@ namespace WizardsCode.Versus.Controller
         /// If no block is found then return null.
         /// </summary>
         /// <returns>A high priority block within x blocks of the current homes directory, or null if none found.</returns>
-        private BlockController GetNearbyHighPriorityBlock(int maxDistance = 3)
+        private BlockController GetNearbyExpansionTargetBlock(int maxDistance = 9)
         {
             if (HomeBlock == null) return null;
 

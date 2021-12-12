@@ -27,7 +27,6 @@ namespace WizardsCode.Versus
         protected override void Start()
         {
             base.Start();
-            mainCamera = Camera.main;
         }
 
         public override void OnPlayerCharacterChanged(ICharacter character)
@@ -37,6 +36,7 @@ namespace WizardsCode.Versus
             player = ((PlayerCharacter)character);
             player.OnCurrentBlockChanged += OnCurrentBlockChanged;
             OnCurrentBlockChanged(player.CurrentBlock);
+            mainCamera = Camera.main;
         }
 
         private void OnCurrentBlockChanged(BlockController newBlock)
@@ -63,16 +63,19 @@ namespace WizardsCode.Versus
                 }
                 else
                 {
-                    if (i >= m_Markers.Count)
+                    if (m_Block.GetEnemiesOf(AnimalController.Faction.Cat)[i] != null)
                     {
-                        m_Markers.Add(Instantiate(m_EnemyMarkerPrefab, gameObject.transform));
-                    }
-                    m_Markers[i].gameObject.SetActive(true);
-                    Vector3 noClampPosition = mainCamera.WorldToScreenPoint(m_Block.GetEnemiesOf(AnimalController.Faction.Cat)[i].transform.position + offset);
+                        if (i >= m_Markers.Count)
+                        {
+                            m_Markers.Add(Instantiate(m_EnemyMarkerPrefab, gameObject.transform));
+                        }
+                        m_Markers[i].gameObject.SetActive(true);
 
-                    m_Markers[i].rectTransform.position = new Vector3(Mathf.Clamp(noClampPosition.x, 0 + clampBorderSize.x, Screen.width - clampBorderSize.x),
+                        Vector3 noClampPosition = mainCamera.WorldToScreenPoint(m_Block.GetEnemiesOf(AnimalController.Faction.Cat)[i].transform.position + offset);
+                        m_Markers[i].rectTransform.position = new Vector3(Mathf.Clamp(noClampPosition.x, 0 + clampBorderSize.x, Screen.width - clampBorderSize.x),
                                                                     Mathf.Clamp(noClampPosition.y, 0 + clampBorderSize.y, Screen.height - clampBorderSize.y),
                                                                       noClampPosition.z);
+                    }
                 }
             }
         }

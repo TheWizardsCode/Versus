@@ -244,7 +244,7 @@ namespace WizardsCode.Versus.Controllers
 
             AnimalController animal;
             float catWeight = (float)((m_CityWidth - block.Coordinates.x) + (m_CityDepth - block.Coordinates.y)) / (m_CityWidth + m_CityDepth);
-            float dogWeight = 1 - catWeight;
+            float dogWeight = 1.1f - catWeight;
             int numOfCats = Random.Range(0, Mathf.RoundToInt(m_MaxNumberOfCatsPerBlock * catWeight));
             for (int i = 0; i < numOfCats; i++)
             {
