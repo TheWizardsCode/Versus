@@ -89,6 +89,9 @@ namespace WizardsCode.Versus.Controller
             get { return m_DogsPresent; }
         }
 
+        /// <summary>
+        /// Return any player character that is in this block. Null if no character present.
+        /// </summary>
         public PlayerCharacter Player
         {
             get;
@@ -171,22 +174,10 @@ namespace WizardsCode.Versus.Controller
             {
                 if (animal.HomeBlock == this)
                 {
-                    if (animal.m_Faction == Faction.Dog)
-                    {
-                        m_DogsPresent.Add(animal);
-                    } else
-                    {
-                        m_CatsPresent.Add(animal);
-                    }
                     return;
                 }
                 else if (animal.currentState != State.Attack && animal.HomeBlock != this)
                 {
-                    if (animal.currentState == State.Expand && animal.ExpandToBlock != this)
-                    {
-                        return;
-                    }
-
                     if (animal.HomeBlock != null)
                     {
                         animal.HomeBlock.RemoveAnimal(animal);
@@ -229,6 +220,16 @@ namespace WizardsCode.Versus.Controller
 
         internal void AddAnimal(AnimalController animal)
         {
+            switch (animal.m_Faction)
+            {
+                case AnimalController.Faction.Cat:
+                    if (m_CatsPresent.Contains(animal)) return;
+                    break;
+                case AnimalController.Faction.Dog:
+                    if (m_DogsPresent.Contains(animal)) return;
+                    break;
+            }
+
             animal.transform.SetParent(transform);
             animal.HomeBlock = this;
             animal.OnDeath += OnDeath;

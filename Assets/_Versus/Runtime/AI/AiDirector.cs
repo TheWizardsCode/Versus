@@ -15,7 +15,7 @@ namespace WizardsCode.Versus.AI
     /// It will decide which blocks are to be taken/held and which can be lost.
     /// Individual AI faction members will then take action based on the directors guidance.
     /// </summary>
-    public class Director : MonoBehaviour
+    public class AiDirector : MonoBehaviour
     {
         [SerializeField, Tooltip("The faction this director is working for.")]
         Faction m_Faction = Faction.Dog;

@@ -25,7 +25,17 @@ namespace WizardsCode.Versus
         [SerializeField, Tooltip("The block coordinates the character is spawned into. Normally this will be set at runtime but for debug purposes it is exposed here.")]
         Vector2Int m_SpawnBlockCoordinates = new Vector2Int(10, 10);
 
-        CityController cityController;
+        private CityController cityController
+        {
+            get
+            {
+                if (m_CityController == null)
+                {
+                    m_CityController = FindObjectOfType<CityController>();
+                }
+                return m_CityController;
+            }
+        }
         IController m_Player;
 
         public IController Player
@@ -59,7 +69,6 @@ namespace WizardsCode.Versus
         protected override void OnStart()
         {
             base.OnStart();
-            cityController = FindObjectOfType<CityController>();
 
             if (m_SpawnOnStart) {
                 inGame = true;
@@ -130,7 +139,8 @@ namespace WizardsCode.Versus
         #region PERSISTENCE
 
         private NeoSerializedGameObject[] m_PersistentObjects = new NeoSerializedGameObject[2];
-        private ICharacter character;
+        public ICharacter character;
+        private CityController m_CityController;
 
         protected override NeoSerializedGameObject[] GetPersistentObjects()
         {

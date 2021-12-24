@@ -28,6 +28,10 @@ namespace WizardsCode.Versus.Controllers
         int m_CityWidth = 15;
         [SerializeField, Tooltip("The depth of the city in blocks. A single block is 100 x 100, not including the roads connecting blocks.")]
         int m_CityDepth = 15;
+        [SerializeField, Tooltip("The maximum number of cats that will spawn in a block on start. Usually there will be fewer than this as each block has a weighting and there is also randomness.")]
+        float m_MaxNumberOfCatsPerBlock = 10;
+        [SerializeField, Tooltip("The maximum number of dogs that will spawn in a block on start. Usually there will be fewer than this as each block has a weighting and there is also randomness.")]
+        float m_MaxNumberOfDogsPerBlock = 15;
         [SerializeField, Tooltip("The size of a city block. It will be this size square.")]
         int m_BlockSize = 100;
         [SerializeField, Tooltip("The widh of a city road. note that this includes pavements/sidewalks.")]
@@ -240,14 +244,14 @@ namespace WizardsCode.Versus.Controllers
 
             AnimalController animal;
             float catWeight = (float)((m_CityWidth - block.Coordinates.x) + (m_CityDepth - block.Coordinates.y)) / (m_CityWidth + m_CityDepth);
-            float dogWeight = 1 - catWeight;
-            int numOfCats = Random.Range(0, Mathf.RoundToInt(10 * catWeight));
+            float dogWeight = 1.1f - catWeight;
+            int numOfCats = Random.Range(0, Mathf.RoundToInt(m_MaxNumberOfCatsPerBlock * catWeight));
             for (int i = 0; i < numOfCats; i++)
             {
                 animal = SpawnCat(block);
             }
 
-            int numOfDogs = Random.Range(0, Mathf.RoundToInt(10 * dogWeight));
+            int numOfDogs = Random.Range(0, Mathf.RoundToInt(m_MaxNumberOfDogsPerBlock * dogWeight));
             for (int i = 0; i < numOfDogs; i++)
             {
                 animal = SpawnDog(block);

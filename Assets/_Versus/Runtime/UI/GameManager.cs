@@ -4,6 +4,9 @@ using TMPro;
 using WizardsCode.Versus.Controller;
 using static WizardsCode.Versus.Controller.AnimalController;
 using static WizardsCode.Versus.Controller.BlockController;
+using NeoFPS.Samples;
+using NeoFPS;
+using WizardsCode.Versus.Controllers;
 
 namespace WizardsCode.Versus
 {
@@ -19,6 +22,10 @@ namespace WizardsCode.Versus
         Camera m_TopDownCamera;
         [SerializeField, Tooltip("The top down data ui to be displayed whenever top down mode is enabled.")]
         RectTransform m_TopDownUI;
+        [SerializeField, Tooltip("GUI elements that should only be enabled in Top Down Mode.")]
+        RectTransform[] m_TopDownGuiElements = new RectTransform[0];
+        [SerializeField, Tooltip("GUI elements that should only be enabled in FPS Mode.")]
+        RectTransform[] m_FpsGuiElements = new RectTransform[0];
 
         [Header("FPS Mode")]
         [SerializeField, Tooltip("The parent object containing the NeoFPSGameMode and other FPS specific objects. These will be enabled when entering the FPS mode.")]
@@ -35,13 +42,21 @@ namespace WizardsCode.Versus
         private GameObject m_EventMessageContainer;
         [SerializeField, Tooltip("A game object containing a TextMeshProUGUI object for displaying game messages")]
         private GameObject m_EventMessageTextPrefab;
-        
+
+        [Header("Status UI")]
+        [SerializeField, Tooltip("The text component that will display the cats current status.")]
+        private TMP_Text m_CatStatusLine;
+        [SerializeField, Tooltip("The text component that will display the dogs current status.")]
+        private TMP_Text m_DogStatusLine;
+
         private const string statusMessage = "<size=20><color=#00ff00ff>Left Click to enter FPS mode in this block</color></size>                              <size=20><color=#00ff00ff>Right Click to cycle cat block priority</color></size>";
         private MessageLogger messageLogger;
         private GameMode currentGameMode;
+        private CityController cityController;
         
         public delegate void OnGameModeChangedDelegate();
         public OnGameModeChangedDelegate OnGameModeChanged;
+        private float m_FpsHealth = 500;
 
         public bool IsTopDownMode
         {
@@ -60,6 +75,8 @@ namespace WizardsCode.Versus
                 // TODO can be exposed as a configurable setting
                 MaxMessages = 100
             };
+
+            cityController = FindObjectOfType<CityController>();
         }
         
         private void Start()
@@ -78,64 +95,8 @@ namespace WizardsCode.Versus
                     var blockController = hit.collider.GetComponentInParent<BlockController>();
                     if (blockController != null)
                     {
-                        var blockDescription = string.Empty;
+                        SetBlockDescription(blockController);
 
-                        blockDescription += $"<color=#ffa500><b>Faction</b></color>{Environment.NewLine}";
-                        if (blockController.DominantFaction == Faction.Neutral) 
-                        {
-                            blockDescription += $"<color=#ff0000>No</color> dominant faction.{Environment.NewLine}";
-                        }
-                        else if(blockController.DominantFaction == Faction.Dog)
-                        {
-                            blockDescription += $"<color=#00ffffff>Dogs</color> are the dominant faction.{Environment.NewLine}";
-                        }
-                        else if (blockController.DominantFaction == Faction.Cat)
-                        {
-                            blockDescription += $"<color=#00ffffff>Cats</color> are the dominant faction.{Environment.NewLine}";
-                        }
-
-                        var dogPriorityMessage = FormatPriorityWithColour(blockController, Faction.Dog);
-                        var catPriorityMessage = FormatPriorityWithColour(blockController, Faction.Cat);
-                        
-                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Dogs</b></color>{Environment.NewLine}";
-                        if (blockController.Dogs.Count > 0)
-                        {
-                            blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count}/{blockController.FactionMembersSupported}</color> Dogs present.{Environment.NewLine}";
-                            if (blockController.Dogs.Count > blockController.FactionMembersSupported)
-                            {
-                                blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count - blockController.FactionMembersSupported}</color> Dogs visiting.{Environment.NewLine}";
-                            }
-                            blockDescription += $"Block set to {dogPriorityMessage}.{Environment.NewLine}";
-                        }
-                        else
-                        {
-                            blockDescription += $"<color=#ff0000>No</color> Dogs present.{Environment.NewLine}";
-                            blockDescription += $"Block set to {dogPriorityMessage}.{Environment.NewLine}";
-                        }
-
-                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Cats</b></color>{Environment.NewLine}";
-                        if (blockController.Cats.Count > 0)
-                        {
-                            blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present.{Environment.NewLine}";
-                            if (blockController.Cats.Count > blockController.FactionMembersSupported)
-                            {
-                                blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count - blockController.FactionMembersSupported}</color> Cats visiting.{Environment.NewLine}";
-                            }
-                            blockDescription += $"Block set to {catPriorityMessage}.{Environment.NewLine}";
-                        }
-                        else
-                        {
-                            blockDescription += $"<color=#00ff00ff>No</color> Cats present.{Environment.NewLine}";
-                            blockDescription += $"Block set to {catPriorityMessage}.{Environment.NewLine}";
-                        }
-                        
-                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Block</b></color>{Environment.NewLine}";
-                        blockDescription += $"Block Type: {blockController.BlockType}{Environment.NewLine}";
-
-                        blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Help</b></color>{Environment.NewLine}";
-                        blockDescription += statusMessage;
-                        m_BlockContent.text = blockDescription;
-                        
                         if (Input.GetMouseButtonDown(0))
                         {
                             EnableFpsMode(blockController);
@@ -152,6 +113,81 @@ namespace WizardsCode.Versus
                         $"<color=#ffa500><b>Help</b></color>{Environment.NewLine}Hover over a city block tile to get info.";
                 }
             }
+        }
+
+        private void OnGUI()
+        {
+            m_CatStatusLine.text = $"{cityController.GetPopulation(Faction.Cat)} Cats.";
+            m_DogStatusLine.text = $"{cityController.GetPopulation(Faction.Dog)} Dogs.";
+        }
+
+        public void QuitGame()
+        {
+            Debug.Log("Quit Game from Menu");
+            Application.Quit();
+        }
+
+        private void SetBlockDescription(BlockController blockController)
+        {
+            var blockDescription = string.Empty;
+
+            blockDescription += $"{blockController.name}{Environment.NewLine}";
+
+            blockDescription += $"<color=#ffa500><b>Faction</b></color>{Environment.NewLine}";
+            if (blockController.DominantFaction == Faction.Neutral)
+            {
+                blockDescription += $"<color=#ff0000>No</color> dominant faction.{Environment.NewLine}";
+            }
+            else if (blockController.DominantFaction == Faction.Dog)
+            {
+                blockDescription += $"<color=#00ffffff>Dogs</color> are the dominant faction.{Environment.NewLine}";
+            }
+            else if (blockController.DominantFaction == Faction.Cat)
+            {
+                blockDescription += $"<color=#00ffffff>Cats</color> are the dominant faction.{Environment.NewLine}";
+            }
+
+            var dogPriorityMessage = FormatPriorityWithColour(blockController, Faction.Dog);
+            var catPriorityMessage = FormatPriorityWithColour(blockController, Faction.Cat);
+
+            blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Dogs</b></color>{Environment.NewLine}";
+            if (blockController.Dogs.Count > 0)
+            {
+                blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count}/{blockController.FactionMembersSupported}</color> Dogs present.{Environment.NewLine}";
+                if (blockController.Dogs.Count > blockController.FactionMembersSupported)
+                {
+                    blockDescription += $"<color=#00ff00ff>{blockController.Dogs.Count - blockController.FactionMembersSupported}</color> Dogs visiting.{Environment.NewLine}";
+                }
+                blockDescription += $"Block set to {dogPriorityMessage}.{Environment.NewLine}";
+            }
+            else
+            {
+                blockDescription += $"<color=#ff0000>No</color> Dogs present.{Environment.NewLine}";
+                blockDescription += $"Block set to {dogPriorityMessage}.{Environment.NewLine}";
+            }
+
+            blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Cats</b></color>{Environment.NewLine}";
+            if (blockController.Cats.Count > 0)
+            {
+                blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count}/{blockController.FactionMembersSupported}</color> Cats present.{Environment.NewLine}";
+                if (blockController.Cats.Count > blockController.FactionMembersSupported)
+                {
+                    blockDescription += $"<color=#00ff00ff>{blockController.Cats.Count - blockController.FactionMembersSupported}</color> Cats visiting.{Environment.NewLine}";
+                }
+                blockDescription += $"Block set to {catPriorityMessage}.{Environment.NewLine}";
+            }
+            else
+            {
+                blockDescription += $"<color=#00ff00ff>No</color> Cats present.{Environment.NewLine}";
+                blockDescription += $"Block set to {catPriorityMessage}.{Environment.NewLine}";
+            }
+
+            blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Block</b></color>{Environment.NewLine}";
+            blockDescription += $"Block Type: {blockController.BlockType}{Environment.NewLine}";
+
+            blockDescription += $"{Environment.NewLine}<color=#ffa500><b>Help</b></color>{Environment.NewLine}";
+            blockDescription += statusMessage;
+            m_BlockContent.text = blockDescription;
         }
 
         private string FormatPriorityWithColour(BlockController controller, Faction faction)
@@ -191,6 +227,7 @@ namespace WizardsCode.Versus
             {
                 pri = 0;
             }
+
             blockController.SetPriority(Faction.Cat, (Priority)pri);
         }
 
@@ -210,15 +247,35 @@ namespace WizardsCode.Versus
 
         private void ConfigureGameObjects(BlockController block)
         {
-            m_TopDownUI.gameObject.SetActive(currentGameMode == GameMode.TopDown);
-            m_TopDownCamera.gameObject.SetActive(currentGameMode == GameMode.TopDown);
-            m_FpsHUD.gameObject.SetActive(currentGameMode == GameMode.FPS);
+            bool isTopDown = currentGameMode == GameMode.TopDown;
+
+            m_TopDownUI.gameObject.SetActive(isTopDown);
+            m_TopDownCamera.gameObject.SetActive(isTopDown);
+            m_FpsHUD.gameObject.SetActive(!isTopDown);
+
+
+            for (int i = 0; i < m_TopDownGuiElements.Length; i++)
+            {
+                m_TopDownGuiElements[i].gameObject.SetActive(isTopDown);
+            }
+
+
+            for (int i = 0; i < m_FpsGuiElements.Length; i++)
+            {
+                m_FpsGuiElements[i].gameObject.SetActive(!isTopDown);
+            }
+
             if (currentGameMode == GameMode.TopDown)
             {
-                m_FpsGameMode.Despawn();
+                if (m_FpsGameMode.character != null)
+                {
+                    m_FpsHealth = m_FpsGameMode.character.GetComponent<BasicHealthManager>().health;
+                    m_FpsGameMode.Despawn();
+                }
             } else
             {
                 m_FpsGameMode.Spawn(block);
+                m_FpsGameMode.character.GetComponent<BasicHealthManager>().health = m_FpsHealth;
             }
         }
 
